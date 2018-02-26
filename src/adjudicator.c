@@ -1,6 +1,4 @@
 #include <stdlib.h>
-
-/* DEBUG */
 #include <stdio.h>
 
 #include "map.h"
@@ -10,6 +8,35 @@
 
 struct order orders[MAX_ORDERS];
 size_t orders_n;
+
+void register_order(enum kind kind,
+                    enum territory terr,
+                    enum territory orig,
+                    enum territory targ,
+                    enum coast coast)
+{
+    size_t i;
+    for (i = 0; i < orders_n; i++) {
+        if (orders[i].terr == terr) {
+            break;
+        }
+    }
+
+    if (i == MAX_ORDERS) {
+        fputs("Too many orders!? Dropping one", stderr);
+        return;
+    }
+
+    orders[i].kind = kind;
+    orders[i].terr = terr;
+    orders[i].orig = orig;
+    orders[i].targ = targ;
+    orders[i].coast = coast;
+
+    if (i == orders_n) {
+        orders_n++;
+    }
+}
 
 enum resolution resolution[34];
 enum state state[34];
@@ -23,7 +50,10 @@ enum resolution adjudicate(size_t o);
 
 void adjudicate_all()
 {
-    /* TODO */
+    size_t i;
+    for (i = 0; i < orders_n; i++) {
+        resolve(i);
+    }
 }
 
 /* Returns the resolution for order "o"
@@ -216,7 +246,7 @@ bool convoy_path_r(enum territory t1,
 
 bool convoy_path(enum territory t1, enum territory t2)
 {
-    bool *visited = calloc(75, sizeof *visited);
+    bool *visited = calloc(TERR_N, sizeof *visited);
 
     bool ret = convoy_path_r(t1, t2, t1, visited);
 

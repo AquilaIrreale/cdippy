@@ -1,13 +1,164 @@
 #include <assert.h>
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
 
 #include "map.h"
 
+void register_unit(enum territory terr,
+                   enum coast coast,
+                   enum unit unit,
+                   enum nation nation)
+{
+    if (terr < 0 || terr > TERR_N) {
+        fputs("Territory out of range. Ignored", stderr);
+        return;
+    }
+
+    bool single = is_single_coast(terr);
+
+    if (single && coast != NONE) {
+        fprintf(stderr, "You are not supposed to specify a coast for %s. Ignored",
+        terr_name(terr));
+        return;
+    }
+
+    if (!single && unit == FLEET && coast != NONE) {
+        fprintf(stderr, "You are supposed to specify a coast for %s. Ignored",
+        terr_name(terr));
+        return;
+    }
+
+    if (unit != FLEET && coast != NONE) {
+        fputs("You are not supposed to specify a coast if unit is an army. Ignored", stderr);
+        return;
+    }
+
+    territories[terr].occupied = true;
+    territories[terr].unit = unit;
+    territories[terr].nation = nation;
+    territories[terr].coast = coast;
+}
+
+void clear_unit(enum territory terr)
+{
+    if (terr < 0 || terr > TERR_N) {
+        fputs("Territory out of range. Ignored", stderr);
+        return;
+    }
+
+    territories[terr].occupied = false;
+}
+
 const char *terr_name(enum territory t) {
-    static const char *names[75] = {
+    static const char *names[TERR_N] = {
         /* TODO: names */
     };
 
-    return names[t];
+    return "<Placeholder>";
+}
+
+enum unit get_unit(const char *s)
+{
+    if (strlen(s) != 1) {
+        return -1;
+    }
+
+    char c = tolower(s[0]);
+
+    return c == 'f' ? FLEET
+         : c == 'a' ? ARMY
+         : -1;
+}
+
+enum coast get_coast(const char *s)
+{
+    char buf[2];
+    size_t l = strlen(s);
+    if (l == 2) {
+        buf[0] = tolower(s[0]);
+        buf[1] = tolower(s[1]);
+    } else if (l == 4) {
+        if (s[0] != '(' || s[3] != ')') {
+            return -1;
+        }
+
+        buf[0] = tolower(s[1]);
+        buf[1] = tolower(s[2]);
+    } else {
+        return -1;
+    }
+
+    if (buf[0] == 'n' && buf[1] == 'c') {
+        return NORTH;
+    } else if(buf[0] == 's' && buf[1] == 'c') {
+        return SOUTH;
+    } else {
+        return -1;
+    }
+}
+
+enum territory get_territory(const char *s)
+{
+    static const char *names[TERR_N] = {
+        "adr", "aeg", "alb", "ank", "apu", "arm",
+        "bal", "bar", "bel", "ber", "bla", "boh",
+        "bot", "bre", "bud", "bul", "bur", "cly",
+        "con", "den", "eas", "edi", "eng", "fin",
+        "gal", "gas", "gre", "hel", "hol", "ion",
+        "iri", "kie", "lon", "lvn", "lvp", "lyo",
+        "mao", "mar", "mos", "mun", "naf", "nao",
+        "nap", "nth", "nwg", "nwy", "par", "pic",
+        "pie", "por", "pru", "rom", "ruh", "rum",
+        "ser", "sev", "sil", "ska", "smy", "spa",
+        "stp", "swe", "syr", "tri", "tun", "tus",
+        "tyr", "tys", "ukr", "ven", "vie", "wal",
+        "war", "wes", "yor"
+    };
+
+    if (strlen(s) != 3) {
+        return -1;
+    }
+
+    char lower[4];
+
+    char *c = lower;
+    while ((*c++ = tolower(*s++)));
+
+    enum territory i;
+    for (i = 0; i < TERR_N; i++) {
+        if (strcmp(names[i], lower) == 0) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+enum nation get_nation(const char *s)
+{
+    static const char *names[TERR_N] = {
+        "austria", "france", "germany",
+        "italy", "russia", "turkey", "uk"
+    };
+
+    if (strlen(s) > 7) {
+        return -1;
+    }
+
+    char lower[8];
+
+    char *c = lower;
+    while ((*c++ = tolower(*s++)));
+
+    enum nation i;
+    for (i = 0; i < 7; i++) {
+        if (strcmp(names[i], lower) == 0) {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 bool is_single_coast(enum territory t)

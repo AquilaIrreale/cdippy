@@ -43,6 +43,11 @@ enum territory {
 
 const char *terr_name(enum territory t);
 
+enum unit get_unit(const char *s);
+enum coast get_coast(const char *s);
+enum territory get_territory(const char *s);
+enum nation get_nation(const char *s);
+
 #define MAX_NEIGH 11
 
 struct terr_info {
@@ -58,7 +63,15 @@ struct terr_info {
     size_t land_neighs_n;
 };
 
-extern struct terr_info territories[75];
+#define TERR_N 75
+
+extern struct terr_info territories[TERR_N];
+
+void register_unit(enum territory terr,
+                   enum coast coast,
+                   enum unit unit,
+                   enum nation nation);
+void clear_unit(enum territory terr);
 
 bool is_single_coast(enum territory t);
 

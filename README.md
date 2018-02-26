@@ -7,7 +7,7 @@ What's this?
 ------------
 
 This is an attempt at writing an adjudicator for the classic variant of the
-game of Diplomacy, in C, motivated by the lack of a publicly available
+game of Diplomacy in C, motivated by the lack of a publicly available
 implementation thereof.
 
 The code is based on the algorithms and equations proposed by Lucas

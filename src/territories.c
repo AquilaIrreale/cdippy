@@ -1,6 +1,6 @@
 #include "map.h"
 
-struct terr_info territories[75] = {
+struct terr_info territories[TERR_N] = {
 /* ADR */ {false, 0, 0, 0, {ALB, APU, ION, TRI, VEN}, 5,
                            {}, 0},
 /* AEG */ {false, 0, 0, 0, {BUL, CON, EAS, GRE, ION, SMY}, 6,

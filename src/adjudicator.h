@@ -35,6 +35,12 @@ struct order {
 extern struct order orders[34];
 extern size_t orders_n;
 
+void register_order(enum kind kind,
+                    enum territory terr,
+                    enum territory orig,
+                    enum territory targ,
+                    enum coast coast);
+
 enum resolution {
     FAILS,
     SUCCEEDS
