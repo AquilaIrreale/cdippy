@@ -138,8 +138,8 @@ enum territory get_territory(const char *s)
 enum nation get_nation(const char *s)
 {
     static const char *names[TERR_N] = {
-        "austria", "france", "germany",
-        "italy", "russia", "turkey", "uk"
+        "austria",  "england", "france",
+        "germany", "italy", "russia", "turkey"
     };
 
     if (strlen(s) > 7) {

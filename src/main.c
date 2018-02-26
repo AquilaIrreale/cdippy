@@ -25,9 +25,7 @@ void execute()
 
 int main(int argc, char *argv[])
 {
-    while (yyparse()) {
-        puts("asdasdasd");
-    }
+    while (yyparse());
 
     return 0;
 }

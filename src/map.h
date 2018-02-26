@@ -17,12 +17,12 @@ enum coast {
 
 enum nation {
     AUSTRIA,
+    ENGLAND,
     FRANCE,
     GERMANY,
     ITALY,
     RUSSIA,
-    TURKEY,
-    UK
+    TURKEY
 };
 
 enum territory {
