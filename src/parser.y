@@ -28,7 +28,8 @@ int yylex();
 
 %%
 
-list: state_list '\n' orders_list '\n' {execute();}
+list: /* Nothing */
+    | list state_list '\n' orders_list '\n' {execute();}
 
 state_list: /* Nothing */
           | state_list state_directive '\n'
