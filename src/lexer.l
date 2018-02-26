@@ -21,6 +21,15 @@
 
     switch (yyleng) {
     case 1:
+        ;
+        char l = tolower(yytext[0]);
+        switch (l) {
+        case 's':
+            return S;
+        case 'c':
+            return C;
+        }
+
         ret = UNIT;
         yylval.i = get_unit(yytext);
         break;

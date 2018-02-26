@@ -23,6 +23,8 @@ int yylex();
 %token <s> UNRECOGNIZED
 
 %token CLEAR
+%token S
+%token C
 
 %start list
 
@@ -48,9 +50,10 @@ order: move_order
 move_order: TERRITORY '-' TERRITORY       {register_order(MOVE, $1, 0, $3, NONE);}
           | TERRITORY '-' TERRITORY COAST {register_order(MOVE, $1, 0, $3, $4);}
 
-support_order: TERRITORY 's' TERRITORY '-' TERRITORY {register_order(SUPPORT, $1, $3, $5, NONE);}
+support_order: TERRITORY S TERRITORY '-' TERRITORY {register_order(SUPPORT, $1, $3, $5, NONE);}
+             | TERRITORY S TERRITORY               {register_order(SUPPORT, $1, $3, $3, NONE);}
 
-convoy_order: TERRITORY 'c' TERRITORY '-' TERRITORY {register_order(CONVOY, $1, $3, $5, NONE);}
+convoy_order: TERRITORY C TERRITORY '-' TERRITORY {register_order(CONVOY, $1, $3, $5, NONE);}
 
 %%
 
