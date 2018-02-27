@@ -38,10 +38,10 @@ void register_order(enum kind kind,
     }
 }
 
-enum resolution resolution[34];
-enum state state[34];
+enum resolution resolution[MAX_ORDERS];
+enum state state[MAX_ORDERS];
 
-size_t deps[34];
+size_t deps[MAX_ORDERS];
 size_t deps_n;
 
 enum resolution resolve(size_t o);
@@ -54,6 +54,17 @@ void adjudicate_all()
     for (i = 0; i < orders_n; i++) {
         resolve(i);
     }
+}
+
+void adjudicator_reset()
+{
+    size_t i;
+    for (i = 0; i < MAX_ORDERS; i++) {
+        state[i] = UNRESOLVED;
+    }
+
+    orders_n = 0;
+    deps_n = 0;
 }
 
 /* Returns the resolution for order "o"
@@ -442,6 +453,7 @@ enum resolution adjudicate(size_t o)
         /* If this is a support to hold */
         if (orders[o].orig == orders[o].targ) {
             /* There must be no move order for orig */
+            size_t i;
             for (i = 0; i < orders_n; i++) {
                 if (orders[i].terr == orders[o].orig) {
                     return orders[i].kind == MOVE ? FAILS : SUCCEEDS;

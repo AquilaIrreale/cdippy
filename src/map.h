@@ -72,6 +72,7 @@ void register_unit(enum territory terr,
                    enum unit unit,
                    enum nation nation);
 void clear_unit(enum territory terr);
+void clear_all_units();
 
 bool is_single_coast(enum territory t);
 

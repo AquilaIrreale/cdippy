@@ -23,6 +23,7 @@ int yylex();
 %token <s> UNRECOGNIZED
 
 %token CLEAR
+%token CLEAR_ALL
 %token S
 %token C
 
@@ -42,6 +43,7 @@ orders_list: /* Nothing */
 state_directive: TERRITORY UNIT NATION {register_unit($1, NONE, $2, $3);}
                | TERRITORY COAST UNIT NATION {register_unit($1, $2, $3, $4);}
                | CLEAR TERRITORY {clear_unit($2);}
+               | CLEAR_ALL {clear_all_units();}
 
 order: move_order
      | support_order

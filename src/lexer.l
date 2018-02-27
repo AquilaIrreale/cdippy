@@ -9,6 +9,8 @@
 
 [ \r\t\v\f\b]+ {; /* Ignore */}
 
+[Cc][Ll][Ee][Aa][Rr]" "[Aa][Ll][Ll] {return CLEAR_ALL;}
+
 [Cc][Ll][Ee][Aa][Rr] {return CLEAR;}
 
 \([NSns][Cc]\) {

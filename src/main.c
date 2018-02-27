@@ -20,7 +20,7 @@ void execute()
 
     putchar('\n');
 
-    orders_n = 0;
+    adjudicator_reset();
 }
 
 int main(int argc, char *argv[])

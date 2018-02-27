@@ -50,6 +50,14 @@ void clear_unit(enum territory terr)
     territories[terr].occupied = false;
 }
 
+void clear_all_units()
+{
+    size_t i;
+    for (i = 0; i < TERR_N; i++) {
+        territories[i].occupied = false;
+    }
+}
+
 const char *terr_name(enum territory t) {
     static const char *names[TERR_N] = {
         /* TODO: names */

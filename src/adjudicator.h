@@ -55,5 +55,6 @@ enum state {
 };
 
 void adjudicate_all();
+void adjudicator_reset();
 
 #endif /* _ADJUDICATOR_H_ */
