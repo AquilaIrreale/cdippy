@@ -439,6 +439,20 @@ enum resolution adjudicate(size_t o)
             return FAILS;
         }
 
+        /* If this is a support to hold */
+        if (orders[o].orig == orders[o].targ) {
+            /* There must be no move order for orig */
+            for (i = 0; i < orders_n; i++) {
+                if (orders[i].terr == orders[o].orig) {
+                    return orders[i].kind == MOVE ? FAILS : SUCCEEDS;
+                }
+            }
+
+            /* orig has no order */
+            return SUCCEEDS;
+        }
+
+        /* Else this is a support to move */
         size_t i;
         for (i = 0; i < orders_n; i++) {
             /* The order to support must exist */
