@@ -23,7 +23,7 @@ void execute()
     adjudicator_reset();
 }
 
-int main(int argc, char *argv[])
+int main()
 {
     while (yyparse());
 

@@ -18,13 +18,13 @@ void register_unit(enum territory terr,
     bool single = is_single_coast(terr);
 
     if (single && coast != NONE) {
-        fprintf(stderr, "You are not supposed to specify a coast for %s. Ignored",
+        fprintf(stderr, "You are not supposed to specify a coast for %s. Ignored\n",
         terr_name(terr));
         return;
     }
 
-    if (!single && unit == FLEET && coast != NONE) {
-        fprintf(stderr, "You are supposed to specify a coast for %s. Ignored",
+    if (!single && unit == FLEET && coast == NONE) {
+        fprintf(stderr, "You are supposed to specify a coast for %s. Ignored\n",
         terr_name(terr));
         return;
     }
@@ -304,7 +304,7 @@ bool is_coast_adjacent(enum territory t1,
     assert(j < 3);
 
     size_t k;
-    for (k = 0; adj[i][j][k] >= 0; k++) {
+    for (k = 0; adj[i][j][k] != -1; k++) {
         if (adj[i][j][k] == t1) {
             return true;
         }
@@ -334,7 +334,9 @@ bool can_reach(enum territory t1,
     }
 
     if (coast == NONE) {
-        assert(is_single_coast(t2));
+        if (!is_single_coast(t2)) {
+            return false;
+        }
 
         if (is_single_coast(t1)) {
             return sea_adjacent;
@@ -342,8 +344,10 @@ bool can_reach(enum territory t1,
 
         return is_coast_adjacent(t2, t1, terr->coast);
     }
-
-    assert(!is_single_coast(t2) && is_single_coast(t1));
+                           /*      Unnecessary       */
+    if (is_single_coast(t2)/* || !is_single_coast(t1)*/) {
+        return false;
+    }
 
     return is_coast_adjacent(t1, t2, coast);
 }
@@ -357,9 +361,13 @@ bool can_support(enum territory t1,
         return false;
     }
 
+    return can_reach(t2, t1, terr->coast);
+
+    /*
     if (terr->unit == ARMY) {
         return is_land_adjacent(t1, t2);
     } else {
         return is_sea_adjacent(t1, t2);
     }
+    */
 }

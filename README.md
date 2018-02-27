@@ -17,7 +17,7 @@ Development will focus on obtaining a working version as soon as possible,
 and then refactoring or rewriting the ugly bits once a stable form is
 reached.
 
-Now [DATC][2] [6.A][3] compliant
+Now [DATC][2] compliant up to section [6.B][3]
 
 [1]: http://uk.diplom.org/pouch/Zine/S2009M/Kruijswijk/DipMath_Chp1.htm
 [2]: http://web.inter.nl.net/users/L.B.Kruijswijk/
