@@ -51,20 +51,15 @@ enum resolution adjudicate(size_t o);
 void adjudicate_all()
 {
     size_t i;
-    for (i = 0; i < orders_n; i++) {
-        resolve(i);
-    }
-}
-
-void adjudicator_reset()
-{
-    size_t i;
     for (i = 0; i < MAX_ORDERS; i++) {
         state[i] = UNRESOLVED;
     }
 
-    orders_n = 0;
     deps_n = 0;
+
+    for (i = 0; i < orders_n; i++) {
+        resolve(i);
+    }
 }
 
 /* Returns the resolution for order "o"
@@ -420,7 +415,7 @@ unsigned prevent_strength(enum territory t1,
  */
 void backup_rule(size_t deps_n_old)
 {
-    /* DEBUG */
+    /* DEBUG *//*
     puts("backup_rule invoked:");
     size_t i;
     for (i = deps_n_old; i < deps_n; i++) {
@@ -428,6 +423,37 @@ void backup_rule(size_t deps_n_old)
         printf("%d %d-%d-%d\n", o->kind, o->terr, o->orig, o->targ);
     }
     exit(0);
+    */
+
+    bool convoy_paradox = false;
+
+    size_t i;
+    for (i = deps_n_old; i < deps_n; i++) {
+        size_t d = deps[i];
+        if (orders[d].kind == CONVOY) {
+            /* Convoy paradox: apply Szykman rule */
+            convoy_paradox = true;
+            resolution[d] = FAILS;
+            state[d] = RESOLVED;
+        } else {
+            state[d] = UNRESOLVED;
+        }
+    }
+
+    if (convoy_paradox) {
+        deps_n = deps_n_old;
+        return;
+    }
+
+    /* Circular motion: everybody succeeds */
+    for (i = 0; i < deps_n; i++) {
+        size_t d = deps[i];
+        resolution[d] = SUCCEEDS;
+        state[d] = RESOLVED;
+    }
+
+    deps_n = deps_n_old;
+    return;
 }
 
 /* Adjudicates order "o"
