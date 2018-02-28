@@ -1,6 +1,8 @@
 #ifndef _MAP_H_
 #define _MAP_H_
 
+#include <config.h>
+
 #include <stddef.h>
 #include <stdbool.h>
 

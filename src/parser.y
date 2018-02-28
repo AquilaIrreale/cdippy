@@ -1,4 +1,6 @@
 %{
+#include <config.h>
+
 #include <stdio.h>
 
 #include "map.h"

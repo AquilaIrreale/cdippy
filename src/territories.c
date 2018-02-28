@@ -1,3 +1,7 @@
+#include <config.h>
+
+#include <stdbool.h>
+
 #include "map.h"
 
 struct terr_info territories[TERR_N] = {

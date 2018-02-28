@@ -1,6 +1,8 @@
 #ifndef _ADJUDICATOR_H_
 #define _ADJUDICATOR_H_
 
+#include <config.h>
+
 #include <stddef.h>
 
 #include "map.h"

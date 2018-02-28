@@ -1,11 +1,25 @@
 # Project specific
-lexer.c
-parser.c
-parser.h
-cdippy
-
-# Prerequisites
-*.d
+src/lexer.c
+src/parser.c
+src/parser.h
+/aclocal.m4
+/autom4te.cache
+/cdippy
+/compile
+/config.h
+/config.h.in
+/config.log
+/config.status
+/configure
+/depcomp
+/install-sh
+/Makefile
+/Makefile.in
+/missing
+/src/.deps/
+/src/.dirstamp
+/stamp-h1
+/ylwrap
 
 # Object files
 *.o
