@@ -411,45 +411,64 @@ unsigned prevent_strength(enum territory t1,
     return 1 + successful_supports(t1, t2, false);
 }
 
-/* Resolves an ambiguous circular dependency
+/* Resolves a circular motion
  */
-void backup_rule(size_t deps_n_old)
+void circular_motion(size_t deps_n_old)
 {
-    /* DEBUG *//*
-    puts("backup_rule invoked:");
+    /* Everybody succeeds */
     size_t i;
     for (i = deps_n_old; i < deps_n; i++) {
-        struct order *o = &orders[deps[i]];
-        printf("%d %d-%d-%d\n", o->kind, o->terr, o->orig, o->targ);
+        size_t d = deps[i];
+        resolution[d] = SUCCEEDS;
+        state[d] = RESOLVED;
     }
-    exit(0);
-    */
+}
 
-    bool convoy_paradox = false;
-
+/* Resolves a convoy paradox
+ */
+void szykman(size_t deps_n_old)
+{
+    /* Convoys fail */
     size_t i;
     for (i = deps_n_old; i < deps_n; i++) {
         size_t d = deps[i];
         if (orders[d].kind == CONVOY) {
-            /* Convoy paradox: apply Szykman rule */
-            convoy_paradox = true;
             resolution[d] = FAILS;
             state[d] = RESOLVED;
         } else {
             state[d] = UNRESOLVED;
         }
     }
+}
 
-    if (convoy_paradox) {
-        deps_n = deps_n_old;
-        return;
+/* Resolves an ambiguous circular dependency
+ */
+void backup_rule(size_t deps_n_old)
+{
+    bool convoy = false;
+    bool support = false;
+
+    /* Analyze orders involved */
+    size_t i;
+    for (i = deps_n_old; i < deps_n; i++) {
+        switch (orders[deps[i]].kind) {
+        case CONVOY:
+            convoy = true;
+            break;
+        case SUPPORT:
+            support = true;
+            break;
+        default:
+            break;
+        }
     }
 
-    /* Circular motion: everybody succeeds */
-    for (i = 0; i < deps_n; i++) {
-        size_t d = deps[i];
-        resolution[d] = SUCCEEDS;
-        state[d] = RESOLVED;
+    if (convoy && support) {
+        /* Convoy paradox: apply Szykman rule */
+        szykman(deps_n_old);
+    } else {
+        /* Circular motion */
+        circular_motion(deps_n_old);
     }
 
     deps_n = deps_n_old;
@@ -567,7 +586,9 @@ enum resolution adjudicate(size_t o)
 
         if (i < orders_n &&
             orders[i].kind == MOVE &&
-            orders[i].targ == t1) {
+            orders[i].targ == t1 &&
+            !convoy_path(t1, t2) &&
+            !convoy_path(t2, t1)) {
 
             /* It's a head-to-head, use defend_strength */
             if (atk <= defend_strength(t2, t1)) {
