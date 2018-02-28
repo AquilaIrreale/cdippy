@@ -269,14 +269,14 @@ bool path(enum territory t1, enum territory t2, enum coast coast)
     }
 
     if (territories[t1].unit == FLEET) {
-        return can_reach(t1, t2, coast);
+        return can_reach(t1, t2, FLEET, coast);
     }
 
     if (coast != NONE) {
         return false;
     }
 
-    if (can_reach(t1, t2, NONE)) {
+    if (can_reach(t1, t2, ARMY, NONE)) {
         return true;
     }
 
@@ -481,6 +481,10 @@ void backup_rule(size_t deps_n_old)
  */
 enum resolution adjudicate(size_t o)
 {
+    if (!territories[orders[o].terr].occupied) {
+        return FAILS;
+    }
+
     switch (orders[o].kind) {
     case CONVOY:
         /* Check territory kind */
@@ -497,23 +501,30 @@ enum resolution adjudicate(size_t o)
 
     case SUPPORT:
         /* Check if valid */
+        if (!can_support(orders[o].terr,
+                         orders[o].targ,
+                         territories[orders[o].terr].unit,
+                         territories[orders[o].terr].coast)) {
 
-        if (!can_support(orders[o].terr, orders[o].targ)) {
             return FAILS;
         }
 
         size_t i;
 
+        /*
         if (orders[o].orig == orders[o].targ) {
-            /* This is a support to hold */
+            * This is a support to hold *
             for (i = 0; i < orders_n; i++) {
-                /* There must be no move order for orig */
+                * There must be no move order for orig *
                 if (orders[i].terr == orders[o].orig &&
                     orders[i].kind == MOVE) {
                     return FAILS;
                 }
             }
         } else {
+        */
+
+        if (orders[o].orig != orders[o].targ) {
             /* This is a support to move */
             for (i = 0; i < orders_n; i++) {
                 /* The order to support must exist */

@@ -317,15 +317,10 @@ bool is_coast_adjacent(enum territory t1,
 
 bool can_reach(enum territory t1,
                enum territory t2,
+               enum unit unit,
                enum coast coast)
 {
-    struct terr_info *terr = &territories[t1];
-
-    if (!terr->occupied) {
-        return false;
-    }
-
-    if (terr->unit == ARMY) {
+    if (unit == ARMY) {
         return is_land_adjacent(t1, t2);
     }
 
@@ -344,7 +339,7 @@ bool can_reach(enum territory t1,
             return sea_adjacent;
         }
 
-        return is_coast_adjacent(t2, t1, terr->coast);
+        return is_coast_adjacent(t2, t1, coast);
     }
                            /*      Unnecessary       */
     if (is_single_coast(t2)/* || !is_single_coast(t1)*/) {
@@ -355,21 +350,9 @@ bool can_reach(enum territory t1,
 }
 
 bool can_support(enum territory t1,
-                 enum territory t2)
+                 enum territory t2,
+                 enum unit unit,
+                 enum coast coast)
 {
-    struct terr_info *terr = &territories[t1];
-
-    if (!terr->occupied) {
-        return false;
-    }
-
-    return can_reach(t2, t1, terr->coast);
-
-    /*
-    if (terr->unit == ARMY) {
-        return is_land_adjacent(t1, t2);
-    } else {
-        return is_sea_adjacent(t1, t2);
-    }
-    */
+    return can_reach(t2, t1, unit, coast);
 }

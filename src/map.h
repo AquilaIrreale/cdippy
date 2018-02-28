@@ -87,8 +87,11 @@ bool is_inner_sea(enum territory t);
 
 bool can_reach(enum territory t1,
                enum territory t2,
+               enum unit unit,
                enum coast coast);
 bool can_support(enum territory t1,
-                enum territory t2);
+                 enum territory t2,
+                 enum unit unit,
+                 enum coast coast);
 
 #endif /* _MAP_H_ */

@@ -1,4 +1,5 @@
 # Project specific
+/build/
 src/lexer.c
 src/parser.c
 src/parser.h
