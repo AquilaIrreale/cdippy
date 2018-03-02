@@ -1,0 +1,182 @@
+set tool "cdippy"
+set exp_internal 1
+set timeout 1.5
+
+set testdata {
+    {
+        "A.1"
+        {
+            "NTH F ENGLAND"
+            ""
+            "NTH-PIC"
+            ""
+        } {
+            "FAILS"
+        }
+    } {
+        "A.2"
+        {
+            "LVP A ENGLAND"
+            ""
+            "LVP-IRI"
+            ""
+        } {
+            "FAILS"
+        }
+    } {
+        "A.3"
+        {
+            "KIE F GERMANY"
+            ""
+            "KIE-MUN"
+            ""
+        } {
+            "FAILS"
+        }
+    } {
+        "A.4"
+        {
+            "KIE F GERMANY"
+            ""
+            "KIE-KIE"
+            ""
+        } {
+            "FAILS"
+        }
+    } {
+        "A.5"
+        {
+            "NTH F ENGLAND"
+            "YOR A ENGLAND"
+            "LVP A ENGLAND"
+            "LON F GERMANY"
+            "WAL A GERMANY"
+            ""
+            "NTH C YOR-YOR"
+            "YOR-YOR"
+            "LVP S YOR-YOR"
+            "LON-YOR"
+            "WAL S LON-YOR"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "A.7"
+        {
+            "LON F ENGLAND"
+            "NTH F ENGLAND"
+            ""
+            "LON-BEL"
+            "NTH C LON-BEL"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "A.8"
+        {
+            "VEN A ITALY"
+            "TYR A ITALY"
+            "TRI F AUSTRIA"
+            ""
+            "VEN-TRI"
+            "TYR S VEN-TRI"
+            "TRI S TRI"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "A.9"
+        {
+            "ROM F ITALY"
+            ""
+            "ROM-VEN"
+            ""
+        } {
+            "FAILS"
+        }
+    } {
+        "A.10"
+        {
+            "VEN A AUSTRIA"
+            "ROM F ITALY"
+            "APU A ITALY"
+            ""
+            "ROM S APU-VEN"
+            "APU-VEN"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "A.11"
+        {
+            "VIE A AUSTRIA"
+            "VEN A ITALY"
+            ""
+            "VIE-TYR"
+            "VEN-TYR"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "A.12"
+        {
+            "VIE A AUSTRIA"
+            "MUN A GERMANY"
+            "VEN A ITALY"
+            ""
+            "VIE-TYR"
+            "MUN-TYR"
+            "VEN-TYR"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "FAILS"
+        }
+    }
+}
+
+global CDIPPY
+
+foreach pattern $testdata {
+    set name "DATC 6.[lindex $pattern 0]"
+    set input [lindex $pattern 1]
+    set output [lindex $pattern 2]
+
+    eval "spawn $CDIPPY"
+
+    foreach line $input {
+        send "$line\n"
+    }
+
+    set failed 0
+
+    foreach line $output {
+        expect {
+            -re "$line" { }
+            default {
+                fail $name
+                set failed 1
+                break
+            }
+        }
+    }
+
+    if {!$failed} {
+        pass $name
+    }
+}

@@ -15,3 +15,7 @@ cdippy_SOURCES = src/adjudicator.c \
 CLEANFILES = src/parser.h \
              src/parser.c \
              src/lexer.c
+
+EXTRA_DIST = tests
+RUNTESTDEFAULTFLAGS = --all --tool cdippy CDIPPY=./cdippy \
+                      --srcdir $$srcdir/tests

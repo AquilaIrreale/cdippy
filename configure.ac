@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.69])
 AC_INIT([cdippy], [0.2], [aquilairreale@ymail.com])
-AM_INIT_AUTOMAKE([foreign subdir-objects])
+AM_INIT_AUTOMAKE([foreign subdir-objects dejagnu])
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile])

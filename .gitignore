@@ -1,14 +1,15 @@
 # Project specific
 /build/
-src/lexer.c
-src/parser.c
-src/parser.h
+/src/lexer.c
+/src/parser.c
+/src/parser.h
 /aclocal.m4
 /autom4te.cache
 /cdippy
 /compile
 /config.h
 /config.h.in
+/config.h.in~
 /config.log
 /config.status
 /configure
@@ -17,10 +18,14 @@ src/parser.h
 /Makefile
 /Makefile.in
 /missing
+/site.bak
+/site.exp
 /src/.deps/
 /src/.dirstamp
 /stamp-h1
 /ylwrap
+*.log
+*.sum
 
 # Object files
 *.o
@@ -31,7 +36,6 @@ src/parser.h
 # Linker output
 *.ilk
 *.map
-*.exp
 
 # Precompiled Headers
 *.gch
