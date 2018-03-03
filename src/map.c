@@ -36,6 +36,16 @@ void register_unit(enum territory terr,
         return;
     }
 
+    if (unit == ARMY && is_inner_sea(terr)) {
+        fputs("Armies can only be placed on land. Ignored", stderr);
+        return;
+    }
+
+    if (unit == FLEET && is_inner_land(terr)) {
+        fputs("Fleets cannot be placed on dry land. Ignored", stderr);
+        return;
+    }
+
     territories[terr].occupied = true;
     territories[terr].unit = unit;
     territories[terr].nation = nation;
