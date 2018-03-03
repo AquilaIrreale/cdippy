@@ -260,6 +260,160 @@ set testdata {
             "FAILS"
             "FAILS"
         }
+    } {
+        "C.1"
+        {
+            "ANK F TURKEY"
+            "CON F TURKEY"
+            "SMY A TURKEY"
+            ""
+            "ANK-CON"
+            "CON-SMY"
+            "SMY-ANK"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "C.2"
+        {
+            "ANK F TURKEY"
+            "CON F TURKEY"
+            "SMY A TURKEY"
+            "BUL A TURKEY"
+            ""
+            "ANK-CON"
+            "CON-SMY"
+            "SMY-ANK"
+            "BUL S ANK-CON"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "C.3"
+        {
+            "ANK F TURKEY"
+            "CON F TURKEY"
+            "SMY A TURKEY"
+            "BUL A TURKEY"
+            ""
+            "ANK-CON"
+            "CON-SMY"
+            "SMY-ANK"
+            "BUL-CON"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "C.4"
+        {
+            "TRI A AUSTRIA"
+            "SER A AUSTRIA"
+            "BUL A TURKEY"
+            "AEG F TURKEY"
+            "ION F TURKEY"
+            "ADR F TURKEY"
+            "NAP F ITALY"
+            ""
+            "TRI-SER"
+            "SER-BUL"
+            "BUL-TRI"
+            "AEG C BUL-TRI"
+            "ION C BUL-TRI"
+            "ADR C BUL-TRI"
+            "NAP-ION"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "C.5"
+        {
+            "TRI A AUSTRIA"
+            "SER A AUSTRIA"
+            "BUL A TURKEY"
+            "AEG F TURKEY"
+            "ION F TURKEY"
+            "ADR F TURKEY"
+            "NAP F ITALY"
+            "TUN F ITALY"
+            ""
+            "TRI-SER"
+            "SER-BUL"
+            "BUL-TRI"
+            "AEG C BUL-TRI"
+            "ION C BUL-TRI"
+            "ADR C BUL-TRI"
+            "NAP-ION"
+            "TUN S NAP-ION"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "C.6"
+        {
+            "NTH F ENGLAND"
+            "LON A ENGLAND"
+            "ENG F FRANCE"
+            "BEL A FRANCE"
+            ""
+            "NTH C LON-BEL"
+            "LON-BEL"
+            "ENG C BEL-LON"
+            "BEL-LON"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "C.7"
+        {
+            "NTH F ENGLAND"
+            "LON A ENGLAND"
+            "ENG F FRANCE"
+            "BEL A FRANCE"
+            "BUR A FRANCE"
+            ""
+            "NTH C LON-BEL"
+            "LON-BEL"
+            "ENG C BEL-LON"
+            "BEL-LON"
+            "BUR-BEL"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+        }
     }
 }
 
