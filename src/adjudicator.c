@@ -511,20 +511,19 @@ enum resolution adjudicate(size_t o)
 
         size_t i;
 
-        /*
         if (orders[o].orig == orders[o].targ) {
-            * This is a support to hold *
+            /* This is a support to hold */
             for (i = 0; i < orders_n; i++) {
-                * There must be no move order for orig *
+                /* Look for a move order for orig */
                 if (orders[i].terr == orders[o].orig &&
-                    orders[i].kind == MOVE) {
+                    orders[i].kind == MOVE &&
+                    orders[i].terr == orders[o].targ) {
+
+                    /* Support fails if move is invalid (has terr == targ) */
                     return FAILS;
                 }
             }
         } else {
-        */
-
-        if (orders[o].orig != orders[o].targ) {
             /* This is a support to move */
             for (i = 0; i < orders_n; i++) {
                 /* The order to support must exist */
