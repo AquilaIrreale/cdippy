@@ -414,6 +414,101 @@ set testdata {
             "FAILS"
             "FAILS"
         }
+    } {
+        "D.1"
+        {
+            "ADR F AUSTRIA"
+            "TRI A AUSTRIA"
+            "VEN A ITALY"
+            "TYR A ITALY"
+            ""
+            "ADR S TRI-VEN"
+            "TRI-VEN"
+            "TYR S VEN"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.2"
+        {
+            "ADR F AUSTRIA"
+            "TRI A AUSTRIA"
+            "VIE A AUSTRIA"
+            "VEN A ITALY"
+            "TYR A ITALY"
+            ""
+            "ADR S TRI-VEN"
+            "TRI-VEN"
+            "VIE-TYR"
+            "TYR S VEN"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "D.3"
+        {
+            "ADR F AUSTRIA"
+            "TRI A AUSTRIA"
+            "VEN A ITALY"
+            "ION F ITALY"
+            ""
+            "ADR S TRI-VEN"
+            "TRI-VEN"
+            "ION-ADR"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "D.4"
+        {
+            "BER A GERMANY"
+            "KIE F GERMANY"
+            "BAL F RUSSIA"
+            "PRU A RUSSIA"
+            ""
+            "BER S KIE"
+            "KIE S BER"
+            "BAL S PRU-BER"
+            "PRU-BER"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.5"
+        {
+            "BER A GERMANY"
+            "KIE F GERMANY"
+            "MUN A GERMANY"
+            "BAL F RUSSIA"
+            "PRU A RUSSIA"
+            ""
+            "BER S MUN-SIL"
+            "KIE S BER"
+            "MUN-SIL"
+            "BAL S PRU-BER"
+            "PRU-BER"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
     }
 }
 
