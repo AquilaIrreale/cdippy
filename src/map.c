@@ -339,6 +339,8 @@ bool can_reach(enum territory t1,
             return sea_adjacent;
         }
 
+        coast = territories[t1].coast;
+
         return is_coast_adjacent(t2, t1, coast);
     }
                            /*      Unnecessary       */
