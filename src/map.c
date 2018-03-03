@@ -354,5 +354,15 @@ bool can_support(enum territory t1,
                  enum unit unit,
                  enum coast coast)
 {
-    return can_reach(t2, t1, unit, coast);
+    if (unit == ARMY) {
+        return can_reach(t1, t2, unit, coast);
+    }
+
+    if (is_single_coast(t1)) {
+        return is_sea_adjacent(t1, t2);
+    } else if (!is_single_coast(t1) && is_single_coast(t2)) {
+        return can_reach(t2, t1, unit, coast);
+    } else {
+        return false;
+    }
 }
