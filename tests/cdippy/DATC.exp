@@ -509,6 +509,153 @@ set testdata {
             "SUCCEEDS"
             "FAILS"
         }
+    } {
+        "D.6"
+        {
+            "BER A GERMANY"
+            "BAL F GERMANY"
+            "PRU F GERMANY"
+            "LVN F RUSSIA"
+            "BOT F RUSSIA"
+            ""
+            "BER-SWE"
+            "BAL C BER-SWE"
+            "PRU S BAL"
+            "LVN-BAL"
+            "BOT S LVN-BAL"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.7"
+        {
+            "BAL F GERMANY"
+            "PRU F GERMANY"
+            "LVN F RUSSIA"
+            "BOT F RUSSIA"
+            "FIN A RUSSIA"
+            ""
+            "BAL-SWE"
+            "PRU S BAL-SWE"
+            "LVN-BAL"
+            "BOT S LVN-BAL"
+            "FIN-SWE"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.8"
+        {
+            "ION F AUSTRIA"
+            "SER A AUSTRIA"
+            "ALB A AUSTRIA"
+            "GRE A TURKEY"
+            "BUL A TURKEY"
+            ""
+            "SER S ALB-GRE"
+            "ALB-GRE"
+            "GRE-NAP"
+            "BUL S GRE"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "D.9"
+        {
+            "VEN A ITALY"
+            "TYR A ITALY"
+            "ALB A AUSTRIA"
+            "TRI A AUSTRIA"
+            ""
+            "VEN-TRI"
+            "TYR S VEN-TRI"
+            "ALB S TRI-SER"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.10"
+        {
+            "BER A GERMANY"
+            "KIE F GERMANY"
+            "MUN A GERMANY"
+            ""
+            "KIE-BER"
+            "MUN S KIE-BER"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.11"
+        {
+            "BER A GERMANY"
+            "KIE F GERMANY"
+            "MUN A GERMANY"
+            "WAR A RUSSIA"
+            ""
+            "BER-PRU"
+            "KIE-BER"
+            "MUN S KIE-BER"
+            "WAR-PRU"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.12"
+        {
+            "TRI F AUSTRIA"
+            "VIE A AUSTRIA"
+            "VEN A ITALY"
+            ""
+            "VIE S VEN-TRI"
+            "VEN-TRI"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.13"
+        {
+            "TRI F AUSTRIA"
+            "VIE A AUSTRIA"
+            "VEN A ITALY"
+            "APU F ITALY"
+            ""
+            "TRI-ADR"
+            "VIE S VEN-TRI"
+            "VEN-TRI"
+            "APU-ADR"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+        }
     }
 }
 
