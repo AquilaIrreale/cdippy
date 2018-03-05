@@ -656,6 +656,81 @@ set testdata {
             "FAILS"
             "FAILS"
         }
+    } {
+        "D.14"
+        {
+            "TRI F AUSTRIA"
+            "VIE A AUSTRIA"
+            "VEN A ITALY"
+            "TYR A ITALY"
+            "ADR F ITALY"
+            ""
+            "VIE S VEN-TRI"
+            "VEN-TRI"
+            "TYR S VEN-TRI"
+            "ADR S VEN-TRI"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.15"
+        {
+            "CON F RUSSIA"
+            "BLA F RUSSIA"
+            "ANK F TURKEY"
+            ""
+            "CON S BLA-ANK"
+            "BLA-ANK"
+            "ANK-CON"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.16"
+        {
+            "LON A ENGLAND"
+            "NTH F ENGLAND"
+            "ENG F FRANCE"
+            "BEL A FRANCE"
+            ""
+            "NTH C BEL-LON"
+            "ENG S BEL-LON"
+            "BEL-LON"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.17"
+        {
+            "CON F RUSSIA"
+            "BLA F RUSSIA"
+            "ANK F TURKEY"
+            "SMY A TURKEY"
+            "ARM A TURKEY"
+            ""
+            "CON S BLA-ANK"
+            "BLA-ANK"
+            "ANK-CON"
+            "SMY S ANK-CON"
+            "ARM-ANK"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
     }
 }
 

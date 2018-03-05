@@ -526,10 +526,17 @@ enum resolution adjudicate(size_t o)
         } else {
             /* This is a support to move */
             for (i = 0; i < orders_n; i++) {
-                /* The order to support must exist */
+                /* The order to support must exist and be valid */
                 if (orders[i].kind == MOVE &&
                     orders[i].terr == orders[o].orig &&
                     orders[i].targ == orders[o].targ) {
+
+                    if (!path(orders[i].terr,
+                              orders[i].targ,
+                              orders[i].coast)) {
+
+                        return FAILS;
+                    }
 
                     break;
                 }
