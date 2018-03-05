@@ -574,7 +574,6 @@ enum resolution adjudicate(size_t o)
         }
 
         /* Check if dislodged */
-        /* TODO: is this really needed? Probably */
         if (dislodged(cur)) {
             return FAILS;
         }
