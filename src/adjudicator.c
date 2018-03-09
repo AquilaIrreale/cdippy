@@ -492,12 +492,27 @@ enum resolution adjudicate(size_t o)
             return FAILS;
         }
 
-        /* Convoy succeeds if not dislodged */
-        if (!dislodged(orders[o].terr)) {
-            return SUCCEEDS;
+        /* Check that a matching move order exists */
+        size_t i;
+        for (i = 0; i < orders_n; i++) {
+            if (orders[i].terr == orders[o].orig) {
+                break;
+            }
         }
 
-        return FAILS;
+        if (i >= orders_n ||
+            orders[i].kind != MOVE ||
+            orders[i].targ != orders[o].targ) {
+
+            return FAILS;
+        }
+
+        /* Convoy succeeds if not dislodged */
+        if (dislodged(orders[o].terr)) {
+            return FAILS;
+        }
+
+        return SUCCEEDS;
 
     case SUPPORT:
         /* Check if valid */
@@ -508,8 +523,6 @@ enum resolution adjudicate(size_t o)
 
             return FAILS;
         }
-
-        size_t i;
 
         if (orders[o].orig == orders[o].targ) {
             /* This is a support to hold */
