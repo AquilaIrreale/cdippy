@@ -64,6 +64,83 @@ void adjudicate_all()
     }
 }
 
+bool possible_convoy_r(enum territory t1,
+                       enum territory t2,
+                       enum territory cur,
+                       bool *visited)
+{
+    /* For each neighbouring sea territory */
+    size_t i;
+    for (i = 0; i < territories[cur].sea_neighs_n; i++) {
+        enum territory t = territories[cur].sea_neighs[i];
+
+        /* If t is our target return with success */
+        if (t == t2 && cur != t1) {
+            return true;
+        }
+
+        /* Coastal territories can't convoy, skip */
+        if (is_coast(t)) {
+            continue;
+        }
+
+        /* Skip if we've already been here */
+        if (visited[t]) {
+            continue;
+        }
+
+        visited[t] = true;
+
+        /* Explore recursively */
+        if (possible_convoy_r(t1, t2, t, visited)) {
+            return true;
+        }
+    }
+
+    /* No path was found in this branch of the exploration */
+    return false;
+}
+
+bool possible_convoy(enum territory t1, enum territory t2)
+{
+    bool *visited = calloc(TERR_N, sizeof *visited);
+
+    bool ret = possible_convoy_r(t1, t2, t1, visited);
+
+    free(visited);
+    return ret;
+}
+
+bool is_legal_move(size_t o)
+{
+    /* Must be a move */
+    if (orders[o].kind != MOVE) {
+        return false;
+    }
+
+    enum territory t1 = orders[o].terr;
+    enum territory t2 = orders[o].targ;
+    enum coast coast = orders[o].coast;
+
+    if (!territories[t1].occupied) {
+        return false;
+    }
+
+    if (territories[t1].unit == FLEET) {
+        return can_reach(t1, t2, FLEET, coast);
+    }
+
+    if (coast != NONE) {
+        return false;
+    }
+
+    if (can_reach(t1, t2, ARMY, NONE)) {
+        return true;
+    }
+
+    return possible_convoy(t1, t2);
+}
+
 /* Returns the resolution for order "o"
  */
 enum resolution resolve(size_t o)
@@ -298,9 +375,8 @@ unsigned hold_strength(enum territory t)
         }
     }
 
-    /* If order exists and is a move */
-    if (i != orders_n &&
-        orders[i].kind == MOVE) {
+    /* If order exists and is valid a move */
+    if (i != orders_n && is_legal_move(i)) {
 
         /* Strength is 0 if it succeds, (occupier unit goes away)
          * 1 otherwise
@@ -524,17 +600,28 @@ enum resolution adjudicate(size_t o)
             return FAILS;
         }
 
+        if (!territories[orders[o].orig].occupied) {
+            /* There's no unit to support */
+            return FAILS;
+        }
+
         if (orders[o].orig == orders[o].targ) {
             /* This is a support to hold */
             for (i = 0; i < orders_n; i++) {
-                /* Look for a move order for orig */
-                if (orders[i].terr == orders[o].orig &&
-                    orders[i].kind == MOVE &&
-                    orders[i].terr == orders[o].targ) {
-
-                    /* Support fails if move is invalid (has terr == targ) */
-                    return FAILS;
+                /* Look for an order for orig */
+                if (orders[i].terr == orders[o].orig) {
+                    break;
                 }
+            }
+
+            if (i != orders_n && is_legal_move(i)) {
+                /* Orig unit is ordered a legal move.
+                 * An illegal move or no order at all
+                 * is treated as a hold. A legal move
+                 * cannot be supported to hold, even
+                 * when it fails
+                 */
+                return FAILS;
             }
         } else {
             /* This is a support to move */
