@@ -892,6 +892,64 @@ set testdata {
             "SUCCEEDS"
             "FAILS"
         }
+    } {
+        "D.26"
+        {
+            "BER A GERMANY"
+            "KIE F GERMANY"
+            "BAL F RUSSIA"
+            "PRU A RUSSIA"
+            ""
+            "BER S PRU-SIL"
+            "KIE S BER"
+            "BAL S PRU-BER"
+            "PRU-BER"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.27"
+        {
+            "SWE F ENGLAND"
+            "DEN F ENGLAND"
+            "BER A GERMANY"
+            "BAL F RUSSIA"
+            "PRU F RUSSIA"
+            ""
+            "SWE-BAL"
+            "DEN S SWE-BAL"
+            "BAL C BER-LVN"
+            "PRU S BAL"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.28"
+        {
+            "BUD A AUSTRIA"
+            "RUM F RUSSIA"
+            "BLA F TURKEY"
+            "BUL A TURKEY"
+            ""
+            "BUD S RUM"
+            "RUM-HOL"
+            "BLA-RUM"
+            "BUL S BLA-RUM"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+        }
     }
 }
 
