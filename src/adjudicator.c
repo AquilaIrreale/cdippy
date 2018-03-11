@@ -89,6 +89,11 @@ bool possible_convoy_r(enum territory t1,
             continue;
         }
 
+        /* Convoy cannot be possible if there's no unit in t */
+        if (!territories[t].occupied) {
+            continue;
+        }
+
         visited[t] = true;
 
         /* Explore recursively */
