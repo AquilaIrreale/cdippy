@@ -950,6 +950,120 @@ set testdata {
             "FAILS"
             "SUCCEEDS"
         }
+    } {
+        "D.29"
+        {
+            "BUD A AUSTRIA"
+            "RUM F RUSSIA"
+            "BLA F TURKEY"
+            "BUL A TURKEY"
+            ""
+            "BUD S RUM"
+            "RUM-BUL(SC)"
+            "BLA-RUM"
+            "BUL S BLA-RUM"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.30"
+        {
+            "AEG F ITALY"
+            "CON F RUSSIA"
+            "BLA F TURKEY"
+            "BUL A TURKEY"
+            ""
+            "AEG S CON"
+            "CON-BUL"
+            "BLA-CON"
+            "BUL S BLA-CON"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.31"
+        {
+            "RUM A AUSTRIA"
+            "BLA F TURKEY"
+            ""
+            "RUM-ARM"
+            "BLA S RUM-ARM"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "D.32"
+        {
+            "EDI F ENGLAND"
+            "LVP A ENGLAND"
+            "LON F FRANCE"
+            "YOR A GERMANY"
+            ""
+            "EDI S LVP-YOR"
+            "LVP-YOR"
+            "LON S YOR"
+            "YOR-HOL"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.33"
+        {
+            "SER A AUSTRIA"
+            "VIE A AUSTRIA"
+            "GAL A RUSSIA"
+            "BUL A TURKEY"
+            ""
+            "SER-BUD"
+            "VIE-BUD"
+            "GAL S SER-BUD"
+            "BUL-SER"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.34"
+        {
+            "BER A GERMANY"
+            "SIL A GERMANY"
+            "BAL F GERMANY"
+            "PRU A ITALY"
+            "WAR A RUSSIA"
+            "LVN A RUSSIA"
+            ""
+            "BER-PRU"
+            "SIL S BER-PRU"
+            "BAL S BER-PRU"
+            "PRU S LVN-PRU"
+            "WAR S LVN-PRU"
+            "LVN-PRU"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+        }
     }
 }
 
