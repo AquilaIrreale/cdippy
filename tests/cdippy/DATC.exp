@@ -1321,6 +1321,34 @@ set testdata {
             "SUCCEEDS"
             "FAILS"
         }
+    } {
+        "E.11"
+        {
+            "SPA A FRANCE"
+            "MAO F FRANCE"
+            "LYO F FRANCE"
+            "MAR A GERMANY"
+            "GAS A GERMANY"
+            "POR F ITALY"
+            "WES F ITALY"
+            ""
+            "SPA-POR"
+            "MAO C SPA-POR"
+            "LYO S POR-SPA"
+            "MAR S GAS-SPA"
+            "GAS-SPA"
+            "POR-SPA(NC)"
+            "WES S POR-SPA"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
     }
 }
 
