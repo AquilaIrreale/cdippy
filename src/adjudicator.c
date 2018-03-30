@@ -406,7 +406,8 @@ unsigned hold_strength(enum territory t)
 
 unsigned successful_supports(enum territory t1,
                              enum territory t2,
-                             bool check_nation)
+                             bool check_nation,
+                             enum nation nation)
 {
     unsigned ret = 0;
 
@@ -416,7 +417,7 @@ unsigned successful_supports(enum territory t1,
         if (orders[i].kind == SUPPORT &&
             orders[i].orig == t1 &&
             orders[i].targ == t2 &&
-            (!check_nation || sup_nation != territories[t2].nation) &&
+            (!check_nation || sup_nation != nation) &&
             resolve(i) == SUCCEEDS) {
 
             ret++;
@@ -424,6 +425,61 @@ unsigned successful_supports(enum territory t1,
     }
 
     return ret;
+}
+
+unsigned successful_supports_2(enum territory t1,
+                               enum territory t2,
+                               enum nation nation1,
+                               enum nation nation2)
+{
+    unsigned ret = 0;
+
+    size_t i;
+    for (i = 0; i < orders_n; i++) {
+        enum nation sup_nation = territories[orders[i].terr].nation;
+        if (orders[i].kind == SUPPORT &&
+            orders[i].orig == t1 &&
+            orders[i].targ == t2 &&
+            sup_nation != nation1 &&
+            sup_nation != nation2 &&
+            resolve(i) == SUCCEEDS) {
+
+            ret++;
+        }
+    }
+
+    return ret;
+}
+
+unsigned attack_strength_vs(enum territory t1,
+                            enum territory t2,
+                            enum coast coast,
+                            enum nation opponent)
+{
+    if (territories[t1].unit == ARMY) {
+        coast = NONE;
+    }
+
+    if (!path(t1, t2, coast)) {
+        return 0;
+    }
+
+    size_t i;
+    for (i = 0; i < orders_n; i++) {
+        if (orders[i].terr == t2) {
+            break;
+        }
+    }
+
+    bool successful_move = i < orders_n &&
+                           orders[i].kind == MOVE &&
+                           resolve(i) == SUCCEEDS;
+
+    if (!territories[t2].occupied || successful_move) {
+        return 1 + successful_supports(t1, t2, true, opponent);
+    } else {
+        return 1 + successful_supports_2(t1, t2, opponent, territories[t2].nation);
+    }
 }
 
 unsigned attack_strength(enum territory t1,
@@ -452,20 +508,50 @@ unsigned attack_strength(enum territory t1,
                            resolve(i) == SUCCEEDS;
 
     if (!territories[t2].occupied || successful_move) {
-        return 1 + successful_supports(t1, t2, false);
+        return 1 + successful_supports(t1, t2, false, 0);
     }
 
     if (territories[t2].nation == territories[t1].nation) {
         return 0;
     }
 
-    return 1 + successful_supports(t1, t2, true);
+    return 1 + successful_supports(t1, t2, true, territories[t2].nation);
 }
 
 unsigned defend_strength(enum territory t1,
                          enum territory t2)
 {
-    return 1 + successful_supports(t1, t2, false);
+    return 1 + successful_supports(t1, t2, false, 0);
+}
+
+bool head_to_head(enum territory t1, enum territory t2)
+{
+    size_t i;
+    struct order *o1 = NULL;
+    struct order *o2 = NULL;
+
+    for (i = 0; i < orders_n; i++) {
+        if (orders[i].terr == t1) {
+            o1 = &orders[i];
+        }
+
+        if (orders[i].terr == t2) {
+            o2 = &orders[i];
+        }
+
+        if (o1 && o2) {
+            break;
+        }
+    }
+
+    return o1 != NULL &&
+           o2 != NULL &&
+           o1->kind == MOVE &&
+           o2->kind == MOVE &&
+           o1->targ == t2 &&
+           o2->targ == t1 &&
+           !convoy_path(t1, t2) &&
+           !convoy_path(t2, t1);
 }
 
 unsigned prevent_strength(enum territory t1,
@@ -476,22 +562,20 @@ unsigned prevent_strength(enum territory t1,
         return 0;
     }
 
-    size_t i;
-    for (i = 0; i < orders_n; i++) {
-        if (orders[i].terr == t2) {
-            break;
+    if (head_to_head(t1, t2)) {
+        size_t i;
+        for (i = 0; i < orders_n; i++) {
+            if (orders[i].terr == t2) {
+                break;
+            }
+        }
+
+        if (resolve(i) == SUCCEEDS) {
+            return 0;
         }
     }
 
-    if (i < orders_n &&
-        orders[i].kind == MOVE &&
-        orders[i].targ == t1 &&
-        resolve(i) == SUCCEEDS) {
-
-        return 0;
-    }
-
-    return 1 + successful_supports(t1, t2, false);
+    return 1 + successful_supports(t1, t2, false, 0);
 }
 
 /* Resolves a circular motion
@@ -699,20 +783,9 @@ enum resolution adjudicate(size_t o)
         enum territory t2 = orders[o].targ;
         enum coast coast = orders[o].coast;
 
-        for (i = 0; i < orders_n; i++) {
-            if (orders[i].terr == t2) {
-                break;
-            }
-        }
-
         unsigned atk = attack_strength(t1, t2, coast);
 
-        if (i < orders_n &&
-            orders[i].kind == MOVE &&
-            orders[i].targ == t1 &&
-            !convoy_path(t1, t2) &&
-            !convoy_path(t2, t1)) {
-
+        if (head_to_head(t1, t2)) {
             /* It's a head-to-head, use defend_strength */
             if (atk <= defend_strength(t2, t1)) {
                 return FAILS;
@@ -727,11 +800,15 @@ enum resolution adjudicate(size_t o)
         for (i = 0; i < orders_n; i++) {
             if (orders[i].kind == MOVE &&
                 orders[i].targ == t2 &&
-                orders[i].terr != t1 &&
-                atk <= prevent_strength(orders[i].terr, t2,
-                                        orders[i].coast)) {
+                orders[i].terr != t1) {
 
-                return FAILS;
+                atk = attack_strength_vs(t1, t2, coast,
+                                         territories[orders[i].terr].nation);
+
+                if (atk <= prevent_strength(orders[i].terr, t2,
+                                            orders[i].coast)) {
+                    return FAILS;
+                }
             }
         }
 
