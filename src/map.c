@@ -174,7 +174,7 @@ enum nation get_nation(const char *s)
     enum nation i;
     for (i = 0; i < 7; i++) {
         if (strcmp(names[i], lower) == 0) {
-            return i;
+            return 1 << i;
         }
     }
 

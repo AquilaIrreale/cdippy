@@ -406,8 +406,7 @@ unsigned hold_strength(enum territory t)
 
 unsigned successful_supports(enum territory t1,
                              enum territory t2,
-                             bool check_nation,
-                             enum nation nation)
+                             unsigned excluded)
 {
     unsigned ret = 0;
 
@@ -417,31 +416,7 @@ unsigned successful_supports(enum territory t1,
         if (orders[i].kind == SUPPORT &&
             orders[i].orig == t1 &&
             orders[i].targ == t2 &&
-            (!check_nation || sup_nation != nation) &&
-            resolve(i) == SUCCEEDS) {
-
-            ret++;
-        }
-    }
-
-    return ret;
-}
-
-unsigned successful_supports_2(enum territory t1,
-                               enum territory t2,
-                               enum nation nation1,
-                               enum nation nation2)
-{
-    unsigned ret = 0;
-
-    size_t i;
-    for (i = 0; i < orders_n; i++) {
-        enum nation sup_nation = territories[orders[i].terr].nation;
-        if (orders[i].kind == SUPPORT &&
-            orders[i].orig == t1 &&
-            orders[i].targ == t2 &&
-            sup_nation != nation1 &&
-            sup_nation != nation2 &&
+            sup_nation & ~excluded &&
             resolve(i) == SUCCEEDS) {
 
             ret++;
@@ -476,9 +451,9 @@ unsigned attack_strength_vs(enum territory t1,
                            resolve(i) == SUCCEEDS;
 
     if (!territories[t2].occupied || successful_move) {
-        return 1 + successful_supports(t1, t2, true, opponent);
+        return 1 + successful_supports(t1, t2, opponent);
     } else {
-        return 1 + successful_supports_2(t1, t2, opponent, territories[t2].nation);
+        return 1 + successful_supports(t1, t2, opponent | territories[t2].nation);
     }
 }
 
@@ -508,20 +483,20 @@ unsigned attack_strength(enum territory t1,
                            resolve(i) == SUCCEEDS;
 
     if (!territories[t2].occupied || successful_move) {
-        return 1 + successful_supports(t1, t2, false, 0);
+        return 1 + successful_supports(t1, t2, NO_NATION);
     }
 
     if (territories[t2].nation == territories[t1].nation) {
         return 0;
     }
 
-    return 1 + successful_supports(t1, t2, true, territories[t2].nation);
+    return 1 + successful_supports(t1, t2, territories[t2].nation);
 }
 
 unsigned defend_strength(enum territory t1,
                          enum territory t2)
 {
-    return 1 + successful_supports(t1, t2, false, 0);
+    return 1 + successful_supports(t1, t2, NO_NATION);
 }
 
 bool head_to_head(enum territory t1, enum territory t2)
@@ -575,7 +550,7 @@ unsigned prevent_strength(enum territory t1,
         }
     }
 
-    return 1 + successful_supports(t1, t2, false, 0);
+    return 1 + successful_supports(t1, t2, NO_NATION);
 }
 
 /* Resolves a circular motion

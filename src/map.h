@@ -18,13 +18,14 @@ enum coast {
 };
 
 enum nation {
-    AUSTRIA,
-    ENGLAND,
-    FRANCE,
-    GERMANY,
-    ITALY,
-    RUSSIA,
-    TURKEY
+    NO_NATION =  0,
+    AUSTRIA   =  1,
+    ENGLAND   =  2,
+    FRANCE    =  4,
+    GERMANY   =  8,
+    ITALY     = 16,
+    RUSSIA    = 32,
+    TURKEY    = 64
 };
 
 enum territory {
