@@ -11,31 +11,39 @@
 struct order orders[MAX_ORDERS];
 size_t orders_n;
 
+size_t get_order(enum territory t)
+{
+    size_t i;
+    for (i = 0; i < orders_n; i++) {
+        if (orders[i].terr == t) {
+            break;
+        }
+    }
+
+    return i;
+}
+
 void register_order(enum kind kind,
                     enum territory terr,
                     enum territory orig,
                     enum territory targ,
                     enum coast coast)
 {
-    size_t i;
-    for (i = 0; i < orders_n; i++) {
-        if (orders[i].terr == terr) {
-            break;
-        }
-    }
+    size_t o = get_order(terr);
 
-    if (i == MAX_ORDERS) {
-        fputs("Too many orders!? Dropping this one", stderr);
+    if (o == MAX_ORDERS) {
+        /* Should normally be unreachable */
+        fputs("Too many orders!? Dropping this one\n", stderr);
         return;
     }
 
-    orders[i].kind = kind;
-    orders[i].terr = terr;
-    orders[i].orig = orig;
-    orders[i].targ = targ;
-    orders[i].coast = coast;
+    orders[o].kind = kind;
+    orders[o].terr = terr;
+    orders[o].orig = orig;
+    orders[o].targ = targ;
+    orders[o].coast = coast;
 
-    if (i == orders_n) {
+    if (o == orders_n) {
         orders_n++;
     }
 }
@@ -193,16 +201,11 @@ bool dislodged(enum territory t)
     }
 
     /* Look for an order for t */
-    size_t i;
-    for (i = 0; i < orders_n; i++) {
-        if (orders[i].terr == t) {
-            break;
-        }
-    }
+    size_t o = get_order(t);
 
-    if (i < orders_n &&
-        orders[i].kind == MOVE &&
-        resolve(i) == SUCCEEDS) {
+    if (o < orders_n &&
+        orders[o].kind == MOVE &&
+        resolve(o) == SUCCEEDS) {
 
         /* If the unit leaves the territory,
          * it can't be dislodged
@@ -211,6 +214,7 @@ bool dislodged(enum territory t)
     }
 
     /* Look for incoming attacks */
+    size_t i;
     for (i = 0; i < orders_n; i++) {
         if (orders[i].kind == MOVE &&
             orders[i].targ == t &&
@@ -260,23 +264,18 @@ bool convoy_path_r(enum territory t1,
 
         if (strict) {
             /* Look for an order for t */
-            size_t j;
-            for (j = 0; j < orders_n; j++) {
-                if (orders[j].terr == t) {
-                    break;
-                }
-            }
+            size_t o = get_order(t);
 
             /* If no order was found, or order is not
              * a convoy, or it is a convoy for a different
              * move than ours, or order is not successful,
              * move on
              */
-            if (j == orders_n ||
-                orders[j].kind != CONVOY ||
-                orders[j].orig != t1 ||
-                orders[j].targ != t2 ||
-                resolve(j) == FAILS) {
+            if (o == orders_n ||
+                orders[o].kind != CONVOY ||
+                orders[o].orig != t1 ||
+                orders[o].targ != t2 ||
+                resolve(o) == FAILS) {
 
                 continue;
             }
@@ -331,23 +330,19 @@ unsigned hold_strength(enum territory t)
     }
 
     /* Look for an order for t */
-    size_t i;
-    for (i = 0; i < orders_n; i++) {
-        if (orders[i].terr == t) {
-            break;
-        }
-    }
+    size_t o = get_order(t);
 
     /* If order exists and is valid a move */
-    if (i != orders_n && is_legal_move(i)) {
+    if (o != orders_n && is_legal_move(o)) {
 
         /* Strength is 0 if it succeds, (occupier unit goes away)
          * 1 otherwise
          */
-        return resolve(i) == SUCCEEDS ? 0 : 1;
+        return resolve(o) == SUCCEEDS ? 0 : 1;
     }
 
-    /* Count succesful supports */
+    /* Count succesful hold supports */
+    size_t i;
     unsigned strength = 1;
     for (i = 0; i < orders_n; i++) {
         if (orders[i].kind == SUPPORT &&
@@ -397,16 +392,11 @@ unsigned attack_strength_vs(enum territory t1,
         return 0;
     }
 
-    size_t i;
-    for (i = 0; i < orders_n; i++) {
-        if (orders[i].terr == t2) {
-            break;
-        }
-    }
+    size_t o = get_order(t2);
 
-    bool successful_move = i < orders_n &&
-                           orders[i].kind == MOVE &&
-                           resolve(i) == SUCCEEDS;
+    bool successful_move = o < orders_n &&
+                           orders[o].kind == MOVE &&
+                           resolve(o) == SUCCEEDS;
 
     if (!territories[t2].occupied || successful_move) {
         return 1 + successful_supports(t1, t2, opponent);
@@ -427,18 +417,12 @@ unsigned attack_strength(enum territory t1,
         return 0;
     }
 
-    /* Look for an order for t2 */
-    size_t i;
-    for (i = 0; i < orders_n; i++) {
-        if (orders[i].terr == t2) {
-            break;
-        }
-    }
+    size_t o = get_order(t2);
 
-    bool successful_move = i < orders_n &&
-                           orders[i].kind == MOVE &&
-                           orders[i].targ != t1 &&
-                           resolve(i) == SUCCEEDS;
+    bool successful_move = o < orders_n &&
+                           orders[o].kind == MOVE &&
+                           orders[o].targ != t1 &&
+                           resolve(o) == SUCCEEDS;
 
     if (!territories[t2].occupied || successful_move) {
         return 1 + successful_supports(t1, t2, NO_NATION);
@@ -495,17 +479,10 @@ unsigned prevent_strength(enum territory t1,
         return 0;
     }
 
-    if (head_to_head(t1, t2)) {
-        size_t i;
-        for (i = 0; i < orders_n; i++) {
-            if (orders[i].terr == t2) {
-                break;
-            }
-        }
+    if (head_to_head(t1, t2) &&
+        resolve(get_order(t2)) == SUCCEEDS) {
 
-        if (resolve(i) == SUCCEEDS) {
-            return 0;
-        }
+        return 0;
     }
 
     return 1 + successful_supports(t1, t2, NO_NATION);
@@ -591,16 +568,11 @@ enum resolution adjudicate(size_t o)
         }
 
         /* Check that a matching move order exists */
-        size_t i;
-        for (i = 0; i < orders_n; i++) {
-            if (orders[i].terr == orders[o].orig) {
-                break;
-            }
-        }
+        size_t m = get_order(orders[o].orig);
 
-        if (i >= orders_n ||
-            orders[i].kind != MOVE ||
-            orders[i].targ != orders[o].targ) {
+        if (m >= orders_n ||
+            orders[m].kind != MOVE ||
+            orders[m].targ != orders[o].targ) {
 
             return FAILS;
         }
@@ -627,16 +599,11 @@ enum resolution adjudicate(size_t o)
             return FAILS;
         }
 
+        size_t i = get_order(orders[o].orig);
+
         if (orders[o].orig == orders[o].targ) {
             /* This is a support to hold */
-            for (i = 0; i < orders_n; i++) {
-                /* Look for an order for orig */
-                if (orders[i].terr == orders[o].orig) {
-                    break;
-                }
-            }
-
-            if (i != orders_n && is_legal_move(i)) {
+            if (i < orders_n && is_legal_move(i)) {
                 /* Orig unit is ordered a legal move.
                  * An illegal move or no order at all
                  * is treated as a hold. A legal move
@@ -646,26 +613,15 @@ enum resolution adjudicate(size_t o)
                 return FAILS;
             }
         } else {
-            /* This is a support to move */
-            for (i = 0; i < orders_n; i++) {
-                /* The order to support must exist and be valid */
-                if (orders[i].kind == MOVE &&
-                    orders[i].terr == orders[o].orig &&
-                    orders[i].targ == orders[o].targ) {
+            /* This is a support to move
+             * The order to support must exist and be valid */
+            if (i >= orders_n ||
+                orders[i].kind != MOVE ||
+                orders[i].targ != orders[o].targ ||
+                !path(orders[i].terr,
+                      orders[i].targ,
+                      orders[i].coast)) {
 
-                    if (!path(orders[i].terr,
-                              orders[i].targ,
-                              orders[i].coast)) {
-
-                        return FAILS;
-                    }
-
-                    break;
-                }
-            }
-
-            if (i == orders_n) {
-                /* Supported move does not exist */
                 return FAILS;
             }
         }
@@ -730,6 +686,7 @@ enum resolution adjudicate(size_t o)
             }
         }
 
+        /* Check strength agains every other attacker */
         for (i = 0; i < orders_n; i++) {
             if (orders[i].kind == MOVE &&
                 orders[i].targ == t2 &&
