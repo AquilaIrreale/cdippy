@@ -16,6 +16,6 @@ CLEANFILES = src/parser.h \
              src/parser.c \
              src/lexer.c
 
-EXTRA_DIST = tests
+EXTRA_DIST = testsuite
 RUNTESTDEFAULTFLAGS = --all --tool cdippy CDIPPY=./cdippy \
-                      --srcdir $$srcdir/tests
+                      --srcdir $$srcdir/testsuite
