@@ -1349,6 +1349,104 @@ set testdata {
             "SUCCEEDS"
             "SUCCEEDS"
         }
+    } {
+        "E.12"
+        {
+            "BUD A AUSTRIA"
+            "SER A AUSTRIA"
+            "VIE A ITALY"
+            "GAL A RUSSIA"
+            "RUM A RUSSIA"
+            ""
+            "BUD-RUM"
+            "SER S VIE-BUD"
+            "VIE-BUD"
+            "GAL-BUD"
+            "RUM S GAL-BUD"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "E.13"
+        {
+            "EDI F ENGLAND"
+            "YOR F ENGLAND"
+            "BEL F FRANCE"
+            "ENG F FRANCE"
+            "NTH F GERMANY"
+            "NWG F RUSSIA"
+            "NWY F RUSSIA"
+            ""
+            "EDI S YOR-NTH"
+            "YOR-NTH"
+            "BEL-NTH"
+            "ENG S BEL-NTH"
+            "NWG-NTH"
+            "NWY S NWG-NTH"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "E.14"
+        {
+            "LVP A ENGLAND"
+            "EDI F RUSSIA"
+            ""
+            "LVP-EDI"
+            "EDI-LVP"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "E.15"
+        {
+            "HOL F ENGLAND"
+            "RUH A ENGLAND"
+            "KIE A FRANCE"
+            "MUN A FRANCE"
+            "SIL A FRANCE"
+            "BER A GERMANY"
+            "DEN F GERMANY"
+            "HEL F GERMANY"
+            "BAL F RUSSIA"
+            "PRU A RUSSIA"
+            ""
+            "HOL S RUH-KIE"
+            "RUH-KIE"
+            "KIE-BER"
+            "MUN S KIE-BER"
+            "SIL S KIE-BER"
+            "BER-KIE"
+            "DEN S KIE-BER"
+            "HEL S KIE-BER"
+            "BAL S PRU-BER"
+            "PRU-BER"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
     }
 }
 
