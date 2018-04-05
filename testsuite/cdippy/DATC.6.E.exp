@@ -1,0 +1,421 @@
+set tool "cdippy"
+set exp_internal 1
+set timeout 1.5
+
+set testdata {
+    {
+        "E.1"
+        {
+            "BER A GERMANY"
+            "KIE F GERMANY"
+            "SIL A GERMANY"
+            "PRU A RUSSIA"
+            ""
+            "BER-PRU"
+            "KIE-BER"
+            "SIL S BER-PRU"
+            "PRU-BER"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "E.2"
+        {
+            "BER A GERMANY"
+            "KIE F GERMANY"
+            "MUN A GERMANY"
+            ""
+            "BER-KIE"
+            "KIE-BER"
+            "MUN S BER-KIE"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "E.3"
+        {
+            "BER A GERMANY"
+            "MUN A GERMANY"
+            "KIE F ENGLAND"
+            ""
+            "BER-KIE"
+            "MUN S KIE-BER"
+            "KIE-BER"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "E.4"
+        {
+            "HOL F GERMANY"
+            "HEL F GERMANY"
+            "SKA F GERMANY"
+            "NTH F FRANCE"
+            "BEL F FRANCE"
+            "EDI F ENGLAND"
+            "YOR F ENGLAND"
+            "NWG F ENGLAND"
+            "KIE A AUSTRIA"
+            "RUH A AUSTRIA"
+            ""
+            "HOL-NTH"
+            "HEL S HOL-NTH"
+            "SKA S HOL-NTH"
+            "NTH-HOL"
+            "BEL S NTH-HOL"
+            "EDI S NWG-NTH"
+            "YOR S NWG-NTH"
+            "NWG-NTH"
+            "KIE S RUH-HOL"
+            "RUH-HOL"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "E.5"
+        {
+            "HOL F GERMANY"
+            "HEL F GERMANY"
+            "SKA F GERMANY"
+            "NTH F FRANCE"
+            "BEL F FRANCE"
+            "EDI F ENGLAND"
+            "YOR F ENGLAND"
+            "NWG F ENGLAND"
+            "LON F ENGLAND"
+            "KIE A AUSTRIA"
+            "RUH A AUSTRIA"
+            ""
+            "HOL-NTH"
+            "HEL S HOL-NTH"
+            "SKA S HOL-NTH"
+            "NTH-HOL"
+            "BEL S NTH-HOL"
+            "EDI S NWG-NTH"
+            "YOR S NWG-NTH"
+            "NWG-NTH"
+            "LON S NWG-NTH"
+            "KIE S RUH-HOL"
+            "RUH-HOL"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "E.6"
+        {
+            "HOL F GERMANY"
+            "HEL F GERMANY"
+            "NTH F FRANCE"
+            "BEL F FRANCE"
+            "ENG F FRANCE"
+            "KIE A AUSTRIA"
+            "RUH A AUSTRIA"
+            ""
+            "HOL-NTH"
+            "HEL S HOL-NTH"
+            "NTH-HOL"
+            "BEL S NTH-HOL"
+            "ENG S HOL-NTH"
+            "KIE S RUH-HOL"
+            "RUH-HOL"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "E.7"
+        {
+            "NTH F ENGLAND"
+            "YOR F ENGLAND"
+            "HOL F GERMANY"
+            "HEL F GERMANY"
+            "SKA F RUSSIA"
+            "NWY F RUSSIA"
+            ""
+            "YOR S NWY-NTH"
+            "HOL S HEL-NTH"
+            "HEL-NTH"
+            "SKA S NWY-NTH"
+            "NWY-NTH"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "E.8"
+        {
+            "NTH F ENGLAND"
+            "YOR F ENGLAND"
+            "HOL F GERMANY"
+            "HEL F GERMANY"
+            "SKA F RUSSIA"
+            "NWY F RUSSIA"
+            ""
+            "NTH-NWY"
+            "YOR S NWY-NTH"
+            "HOL S HEL-NTH"
+            "HEL-NTH"
+            "SKA S NWY-NTH"
+            "NWY-NTH"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "E.9"
+        {
+            "NTH F ENGLAND"
+            "YOR F ENGLAND"
+            "HOL F GERMANY"
+            "HEL F GERMANY"
+            "SKA F RUSSIA"
+            "NWY F RUSSIA"
+            ""
+            "NTH-NWG"
+            "YOR S NWY-NTH"
+            "HOL S HEL-NTH"
+            "HEL-NTH"
+            "SKA S NWY-NTH"
+            "NWY-NTH"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "E.10"
+        {
+            "NTH F ENGLAND"
+            "YOR F ENGLAND"
+            "HOL F GERMANY"
+            "HEL F GERMANY"
+            "DEN F GERMANY"
+            "SKA F RUSSIA"
+            "NWY F RUSSIA"
+            ""
+            "NTH-DEN"
+            "YOR S NWY-NTH"
+            "HOL S HEL-NTH"
+            "HEL-NTH"
+            "DEN-HEL"
+            "SKA S NWY-NTH"
+            "NWY-NTH"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "E.11"
+        {
+            "SPA A FRANCE"
+            "MAO F FRANCE"
+            "LYO F FRANCE"
+            "MAR A GERMANY"
+            "GAS A GERMANY"
+            "POR F ITALY"
+            "WES F ITALY"
+            ""
+            "SPA-POR"
+            "MAO C SPA-POR"
+            "LYO S POR-SPA"
+            "MAR S GAS-SPA"
+            "GAS-SPA"
+            "POR-SPA(NC)"
+            "WES S POR-SPA"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "E.12"
+        {
+            "BUD A AUSTRIA"
+            "SER A AUSTRIA"
+            "VIE A ITALY"
+            "GAL A RUSSIA"
+            "RUM A RUSSIA"
+            ""
+            "BUD-RUM"
+            "SER S VIE-BUD"
+            "VIE-BUD"
+            "GAL-BUD"
+            "RUM S GAL-BUD"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "E.13"
+        {
+            "EDI F ENGLAND"
+            "YOR F ENGLAND"
+            "BEL F FRANCE"
+            "ENG F FRANCE"
+            "NTH F GERMANY"
+            "NWG F RUSSIA"
+            "NWY F RUSSIA"
+            ""
+            "EDI S YOR-NTH"
+            "YOR-NTH"
+            "BEL-NTH"
+            "ENG S BEL-NTH"
+            "NWG-NTH"
+            "NWY S NWG-NTH"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "E.14"
+        {
+            "LVP A ENGLAND"
+            "EDI F RUSSIA"
+            ""
+            "LVP-EDI"
+            "EDI-LVP"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "E.15"
+        {
+            "HOL F ENGLAND"
+            "RUH A ENGLAND"
+            "KIE A FRANCE"
+            "MUN A FRANCE"
+            "SIL A FRANCE"
+            "BER A GERMANY"
+            "DEN F GERMANY"
+            "HEL F GERMANY"
+            "BAL F RUSSIA"
+            "PRU A RUSSIA"
+            ""
+            "HOL S RUH-KIE"
+            "RUH-KIE"
+            "KIE-BER"
+            "MUN S KIE-BER"
+            "SIL S KIE-BER"
+            "BER-KIE"
+            "DEN S KIE-BER"
+            "HEL S KIE-BER"
+            "BAL S PRU-BER"
+            "PRU-BER"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    }
+}
+
+global CDIPPY
+
+foreach pattern $testdata {
+    set name "DATC 6.[lindex $pattern 0]"
+    set input [lindex $pattern 1]
+    set output [lindex $pattern 2]
+
+    eval "spawn $CDIPPY"
+
+    foreach line $input {
+        send "$line\n"
+    }
+
+    set failed 0
+
+    foreach line $output {
+        expect {
+            -re "$line" { }
+            default {
+                fail $name
+                set failed 1
+                break
+            }
+        }
+    }
+
+    if {!$failed} {
+        pass $name
+    }
+}

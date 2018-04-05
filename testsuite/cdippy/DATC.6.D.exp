@@ -1,0 +1,688 @@
+set tool "cdippy"
+set exp_internal 1
+set timeout 1.5
+
+set testdata {
+    {
+        "D.1"
+        {
+            "ADR F AUSTRIA"
+            "TRI A AUSTRIA"
+            "VEN A ITALY"
+            "TYR A ITALY"
+            ""
+            "ADR S TRI-VEN"
+            "TRI-VEN"
+            "TYR S VEN"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.2"
+        {
+            "ADR F AUSTRIA"
+            "TRI A AUSTRIA"
+            "VIE A AUSTRIA"
+            "VEN A ITALY"
+            "TYR A ITALY"
+            ""
+            "ADR S TRI-VEN"
+            "TRI-VEN"
+            "VIE-TYR"
+            "TYR S VEN"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "D.3"
+        {
+            "ADR F AUSTRIA"
+            "TRI A AUSTRIA"
+            "VEN A ITALY"
+            "ION F ITALY"
+            ""
+            "ADR S TRI-VEN"
+            "TRI-VEN"
+            "ION-ADR"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "D.4"
+        {
+            "BER A GERMANY"
+            "KIE F GERMANY"
+            "BAL F RUSSIA"
+            "PRU A RUSSIA"
+            ""
+            "BER S KIE"
+            "KIE S BER"
+            "BAL S PRU-BER"
+            "PRU-BER"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.5"
+        {
+            "BER A GERMANY"
+            "KIE F GERMANY"
+            "MUN A GERMANY"
+            "BAL F RUSSIA"
+            "PRU A RUSSIA"
+            ""
+            "BER S MUN-SIL"
+            "KIE S BER"
+            "MUN-SIL"
+            "BAL S PRU-BER"
+            "PRU-BER"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.6"
+        {
+            "BER A GERMANY"
+            "BAL F GERMANY"
+            "PRU F GERMANY"
+            "LVN F RUSSIA"
+            "BOT F RUSSIA"
+            ""
+            "BER-SWE"
+            "BAL C BER-SWE"
+            "PRU S BAL"
+            "LVN-BAL"
+            "BOT S LVN-BAL"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.7"
+        {
+            "BAL F GERMANY"
+            "PRU F GERMANY"
+            "LVN F RUSSIA"
+            "BOT F RUSSIA"
+            "FIN A RUSSIA"
+            ""
+            "BAL-SWE"
+            "PRU S BAL-SWE"
+            "LVN-BAL"
+            "BOT S LVN-BAL"
+            "FIN-SWE"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.8"
+        {
+            "ION F AUSTRIA"
+            "SER A AUSTRIA"
+            "ALB A AUSTRIA"
+            "GRE A TURKEY"
+            "BUL A TURKEY"
+            ""
+            "SER S ALB-GRE"
+            "ALB-GRE"
+            "GRE-NAP"
+            "BUL S GRE"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "D.9"
+        {
+            "VEN A ITALY"
+            "TYR A ITALY"
+            "ALB A AUSTRIA"
+            "TRI A AUSTRIA"
+            ""
+            "VEN-TRI"
+            "TYR S VEN-TRI"
+            "ALB S TRI-SER"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.10"
+        {
+            "BER A GERMANY"
+            "KIE F GERMANY"
+            "MUN A GERMANY"
+            ""
+            "KIE-BER"
+            "MUN S KIE-BER"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.11"
+        {
+            "BER A GERMANY"
+            "KIE F GERMANY"
+            "MUN A GERMANY"
+            "WAR A RUSSIA"
+            ""
+            "BER-PRU"
+            "KIE-BER"
+            "MUN S KIE-BER"
+            "WAR-PRU"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.12"
+        {
+            "TRI F AUSTRIA"
+            "VIE A AUSTRIA"
+            "VEN A ITALY"
+            ""
+            "VIE S VEN-TRI"
+            "VEN-TRI"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.13"
+        {
+            "TRI F AUSTRIA"
+            "VIE A AUSTRIA"
+            "VEN A ITALY"
+            "APU F ITALY"
+            ""
+            "TRI-ADR"
+            "VIE S VEN-TRI"
+            "VEN-TRI"
+            "APU-ADR"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "D.14"
+        {
+            "TRI F AUSTRIA"
+            "VIE A AUSTRIA"
+            "VEN A ITALY"
+            "TYR A ITALY"
+            "ADR F ITALY"
+            ""
+            "VIE S VEN-TRI"
+            "VEN-TRI"
+            "TYR S VEN-TRI"
+            "ADR S VEN-TRI"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.15"
+        {
+            "CON F RUSSIA"
+            "BLA F RUSSIA"
+            "ANK F TURKEY"
+            ""
+            "CON S BLA-ANK"
+            "BLA-ANK"
+            "ANK-CON"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.16"
+        {
+            "LON A ENGLAND"
+            "NTH F ENGLAND"
+            "ENG F FRANCE"
+            "BEL A FRANCE"
+            ""
+            "NTH C BEL-LON"
+            "ENG S BEL-LON"
+            "BEL-LON"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.17"
+        {
+            "CON F RUSSIA"
+            "BLA F RUSSIA"
+            "ANK F TURKEY"
+            "SMY A TURKEY"
+            "ARM A TURKEY"
+            ""
+            "CON S BLA-ANK"
+            "BLA-ANK"
+            "ANK-CON"
+            "SMY S ANK-CON"
+            "ARM-ANK"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.18"
+        {
+            "CON F RUSSIA"
+            "BLA F RUSSIA"
+            "BUL A RUSSIA"
+            "ANK F TURKEY"
+            "SMY A TURKEY"
+            "ARM A TURKEY"
+            ""
+            "CON S BLA-ANK"
+            "BLA-ANK"
+            "BUL S CON"
+            "ANK-CON"
+            "SMY S ANK-CON"
+            "ARM-ANK"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.19"
+        {
+            "CON F RUSSIA"
+            "BLA F RUSSIA"
+            "SMY A RUSSIA"
+            "ANK F TURKEY"
+            ""
+            "CON S BLA-ANK"
+            "BLA-ANK"
+            "SMY S ANK-CON"
+            "ANK-CON"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.20"
+        {
+            "LON F ENGLAND"
+            "NTH F ENGLAND"
+            "YOR A ENGLAND"
+            "ENG F FRANCE"
+            ""
+            "LON S NTH-ENG"
+            "NTH-ENG"
+            "YOR-LON"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.21"
+        {
+            "TRI F AUSTRIA"
+            "VEN A ITALY"
+            "TYR A ITALY"
+            "MUN A GERMANY"
+            "SIL A RUSSIA"
+            "BER A RUSSIA"
+            ""
+            "VEN-TRI"
+            "TYR S VEN-TRI"
+            "MUN-TYR"
+            "SIL-MUN"
+            "BER S SIL-MUN"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.22"
+        {
+            "KIE F GERMANY"
+            "BUR A GERMANY"
+            "MUN A RUSSIA"
+            "BER A RUSSIA"
+            ""
+            "KIE-MUN"
+            "BUR S KIE-MUN"
+            "MUN-KIE"
+            "BER S MUN-KIE"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.23"
+        {
+            "LYO F ITALY"
+            "WES F ITALY"
+            "SPA(NC) F FRANCE"
+            "MAR F FRANCE"
+            ""
+            "LYO-SPA(SC)"
+            "WES S LYO-SPA(SC)"
+            "SPA-LYO"
+            "MAR S SPA-LYO"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "D.24"
+        {
+            "MAR A FRANCE"
+            "SPA(SC) F FRANCE"
+            "LYO F ITALY"
+            "TYS F TURKEY"
+            "WES F TURKEY"
+            ""
+            "MAR-LYO"
+            "SPA S MAR-LYO"
+            "TYS S WES-LYO"
+            "WES-LYO"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.25"
+        {
+            "BER A GERMANY"
+            "KIE F GERMANY"
+            "BAL F RUSSIA"
+            "PRU A RUSSIA"
+            ""
+            "BER S PRU"
+            "KIE S BER"
+            "BAL S PRU-BER"
+            "PRU-BER"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.26"
+        {
+            "BER A GERMANY"
+            "KIE F GERMANY"
+            "BAL F RUSSIA"
+            "PRU A RUSSIA"
+            ""
+            "BER S PRU-SIL"
+            "KIE S BER"
+            "BAL S PRU-BER"
+            "PRU-BER"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.27"
+        {
+            "SWE F ENGLAND"
+            "DEN F ENGLAND"
+            "BER A GERMANY"
+            "BAL F RUSSIA"
+            "PRU F RUSSIA"
+            ""
+            "SWE-BAL"
+            "DEN S SWE-BAL"
+            "BAL C BER-LVN"
+            "PRU S BAL"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.28"
+        {
+            "BUD A AUSTRIA"
+            "RUM F RUSSIA"
+            "BLA F TURKEY"
+            "BUL A TURKEY"
+            ""
+            "BUD S RUM"
+            "RUM-HOL"
+            "BLA-RUM"
+            "BUL S BLA-RUM"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.29"
+        {
+            "BUD A AUSTRIA"
+            "RUM F RUSSIA"
+            "BLA F TURKEY"
+            "BUL A TURKEY"
+            ""
+            "BUD S RUM"
+            "RUM-BUL(SC)"
+            "BLA-RUM"
+            "BUL S BLA-RUM"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.30"
+        {
+            "AEG F ITALY"
+            "CON F RUSSIA"
+            "BLA F TURKEY"
+            "BUL A TURKEY"
+            ""
+            "AEG S CON"
+            "CON-BUL"
+            "BLA-CON"
+            "BUL S BLA-CON"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.31"
+        {
+            "RUM A AUSTRIA"
+            "BLA F TURKEY"
+            ""
+            "RUM-ARM"
+            "BLA S RUM-ARM"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "D.32"
+        {
+            "EDI F ENGLAND"
+            "LVP A ENGLAND"
+            "LON F FRANCE"
+            "YOR A GERMANY"
+            ""
+            "EDI S LVP-YOR"
+            "LVP-YOR"
+            "LON S YOR"
+            "YOR-HOL"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "D.33"
+        {
+            "SER A AUSTRIA"
+            "VIE A AUSTRIA"
+            "GAL A RUSSIA"
+            "BUL A TURKEY"
+            ""
+            "SER-BUD"
+            "VIE-BUD"
+            "GAL S SER-BUD"
+            "BUL-SER"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "D.34"
+        {
+            "BER A GERMANY"
+            "SIL A GERMANY"
+            "BAL F GERMANY"
+            "PRU A ITALY"
+            "WAR A RUSSIA"
+            "LVN A RUSSIA"
+            ""
+            "BER-PRU"
+            "SIL S BER-PRU"
+            "BAL S BER-PRU"
+            "PRU S LVN-PRU"
+            "WAR S LVN-PRU"
+            "LVN-PRU"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    }
+}
+
+global CDIPPY
+
+foreach pattern $testdata {
+    set name "DATC 6.[lindex $pattern 0]"
+    set input [lindex $pattern 1]
+    set output [lindex $pattern 2]
+
+    eval "spawn $CDIPPY"
+
+    foreach line $input {
+        send "$line\n"
+    }
+
+    set failed 0
+
+    foreach line $output {
+        expect {
+            -re "$line" { }
+            default {
+                fail $name
+                set failed 1
+                break
+            }
+        }
+    }
+
+    if {!$failed} {
+        pass $name
+    }
+}

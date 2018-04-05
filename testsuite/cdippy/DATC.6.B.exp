@@ -1,0 +1,151 @@
+set tool "cdippy"
+set exp_internal 1
+set timeout 1.5
+
+set testdata {
+    {
+        "B.1"
+        {
+            "POR F FRANCE"
+            ""
+            "POR-SPA"
+            ""
+        } {
+            "FAILS"
+        }
+    } {
+        "B.2"
+        {
+            "GAS F FRANCE"
+            ""
+            "GAS-SPA"
+            ""
+        } {
+            "FAILS"
+        }
+    } {
+        "B.3"
+        {
+            "GAS F FRANCE"
+            ""
+            "GAS-SPA(SC)"
+            ""
+        } {
+            "FAILS"
+        }
+    } {
+        "B.4"
+        {
+            "GAS F FRANCE"
+            "MAR F FRANCE"
+            "WES F ITALY"
+            ""
+            "GAS-SPA(NC)"
+            "MAR S GAS-SPA"
+            "WES-SPA(SC)"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "B.5"
+        {
+            "MAR F FRANCE"
+            "SPA(NC) F FRANCE"
+            "LYO F ITALY"
+            ""
+            "MAR-LYO"
+            "SPA S MAR-LYO"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "B.6"
+        {
+            "IRI F ENGLAND"
+            "NAO F ENGLAND"
+            "SPA(NC) F FRANCE"
+            "MAO F FRANCE"
+            "LYO F ITALY"
+            ""
+            "IRI S NAO-MAO"
+            "NAO-MAO"
+            "SPA S MAO"
+            "LYO-SPA(SC)"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "B.11"
+        {
+            "SPA(NC) F FRANCE"
+            ""
+            "SPA-LYO"
+            ""
+        } {
+            "FAILS"
+        }
+    } {
+        "B.12"
+        {
+            "GAS A FRANCE"
+            ""
+            "GAS-SPA(NC)"
+            ""
+        } {
+            "SUCCEEDS"
+        }
+    } {
+        "B.13"
+        {
+            "BUL(NC) F TURKEY"
+            "CON F TURKEY"
+            ""
+            "BUL-CON"
+            "CON-BUL(SC)"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+        }
+    }
+}
+
+global CDIPPY
+
+foreach pattern $testdata {
+    set name "DATC 6.[lindex $pattern 0]"
+    set input [lindex $pattern 1]
+    set output [lindex $pattern 2]
+
+    eval "spawn $CDIPPY"
+
+    foreach line $input {
+        send "$line\n"
+    }
+
+    set failed 0
+
+    foreach line $output {
+        expect {
+            -re "$line" { }
+            default {
+                fail $name
+                set failed 1
+                break
+            }
+        }
+    }
+
+    if {!$failed} {
+        pass $name
+    }
+}
