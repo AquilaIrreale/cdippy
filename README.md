@@ -18,7 +18,7 @@ Development will focus on obtaining a working version as soon as
 possible, and then refactoring or rewriting the ugly bits once a stable
 form is reached.
 
-Now [DATC][2] compliant up to and including section [6.D][3] (some tests
+Now [DATC][2] compliant up to and including section [6.E][3] (some tests
 do not apply)
 
 Usage
