@@ -1,0 +1,379 @@
+set tool "cdippy"
+set exp_internal 1
+set timeout 1.5
+
+set testdata {
+    {
+        "F.1"
+        {
+            "GRE A TURKEY"
+            "AEG F TURKEY"
+            "CON F TURKEY"
+            "BLA F TURKEY"
+            ""
+            "GRE-SEV"
+            "AEG C GRE-SEV"
+            "CON C GRE-SEV"
+            "BLA C GRE-SEV"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "F.2"
+        {
+            "ENG F ENGLAND"
+            "LON A ENGLAND"
+            "PAR A FRANCE"
+            ""
+            "ENG C LON-BRE"
+            "LON-BRE"
+            "PAR-BRE"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "F.3"
+        {
+            "ENG F ENGLAND"
+            "LON A ENGLAND"
+            "MAO F ENGLAND"
+            "PAR A FRANCE"
+            ""
+            "ENG C LON-BRE"
+            "LON-BRE"
+            "MAO S LON-BRE"
+            "PAR-BRE"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "F.4"
+        {
+            "NTH F ENGLAND"
+            "LON A ENGLAND"
+            "SKA F GERMANY"
+            ""
+            "NTH C LON-HOL"
+            "LON-HOL"
+            "SKA-NTH"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    } {
+        "F.5"
+        {
+            "NTH F ENGLAND"
+            "LON A ENGLAND"
+            "ENG F FRANCE"
+            "BEL F FRANCE"
+            "SKA F GERMANY"
+            "DEN F GERMANY"
+            ""
+            "NTH C LON-HOL"
+            "LON-HOL"
+            "ENG-NTH"
+            "BEL S ENG-NTH"
+            "SKA-NTH"
+            "DEN S SKA-NTH"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "F.6"
+        {
+            "NTH F ENGLAND"
+            "LON A ENGLAND"
+            "HOL A GERMANY"
+            "BEL A GERMANY"
+            "HEL F GERMANY"
+            "SKA F GERMANY"
+            "PIC A FRANCE"
+            "BUR A FRANCE"
+            ""
+            "NTH C LON-HOL"
+            "LON-HOL"
+            "HOL S BEL"
+            "BEL S HOL"
+            "HEL S SKA-NTH"
+            "SKA-NTH"
+            "PIC-BEL"
+            "BUR S PIC-BEL"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+        }
+    } {
+        "F.7"
+        {
+            "SKIP"
+        } {
+        }
+    } {
+        "F.8"
+        {
+            "NTH F ENGLAND"
+            "LON A ENGLAND"
+            "HEL F GERMANY"
+            "SKA F GERMANY"
+            "BEL A GERMANY"
+            ""
+            "NTH C LON-HOL"
+            "LON-HOL"
+            "HEL S SKA-NTH"
+            "SKA-NTH"
+            "BEL-HOL"
+            ""
+        } {
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "F.9"
+        {
+            "ENG F ENGLAND"
+            "NTH F ENGLAND"
+            "LON A ENGLAND"
+            "BRE F FRANCE"
+            "MAO F FRANCE"
+            ""
+            "ENG C LON-BEL"
+            "NTH C LON-BEL"
+            "LON-BEL"
+            "BRE S MAO-ENG"
+            "MAO-ENG"
+            ""
+        } {
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "F.10"
+        {
+            "NTH F ENGLAND"
+            "LON A ENGLAND"
+            "ENG F GERMANY"
+            "BRE F FRANCE"
+            "MAO F FRANCE"
+            ""
+            "NTH C LON-BEL"
+            "LON-BEL"
+            "ENG C LON-BEL"
+            "BRE S MAO-ENG"
+            "MAO-ENG"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "F.11"
+        {
+            "LON A ENGLAND"
+            "ENG F GERMANY"
+            "NTH F RUSSIA"
+            "BRE F FRANCE"
+            "MAO F FRANCE"
+            ""
+            "LON-BEL"
+            "ENG C LON-BEL"
+            "NTH C LON-BEL"
+            "BRE S MAO-ENG"
+            "MAO-ENG"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "F.12"
+        {
+            "ENG F ENGLAND"
+            "LON A ENGLAND"
+            "IRI F ENGLAND"
+            "NAO F FRANCE"
+            "MAO F FRANCE"
+            ""
+            "ENG C LON-BEL"
+            "LON-BEL"
+            "IRI C LON-BEL"
+            "NAO S MAO-IRI"
+            "MAO-IRI"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "F.13"
+        {
+            "LON A ENGLAND"
+            "NTH F ENGLAND"
+            "ENG F FRANCE"
+            "HOL F GERMANY"
+            "DEN F GERMANY"
+            ""
+            "LON-BEL"
+            "NTH C LON-BEL"
+            "ENG C LON-BEL"
+            "HOL S DEN-NTH"
+            "DEN-NTH"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "F.14"
+        {
+            "LON F ENGLAND"
+            "WAL F ENGLAND"
+            "BRE A FRANCE"
+            "ENG F FRANCE"
+            ""
+            "LON S WAL-ENG"
+            "WAL-ENG"
+            "BRE-LON"
+            "ENG C BRE-LON"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+        }
+    } {
+        "F.15"
+        {
+            "LON F ENGLAND"
+            "WAL F ENGLAND"
+            "BRE A FRANCE"
+            "ENG F FRANCE"
+            "IRI F ITALY"
+            "MAO F ITALY"
+            "NAF A ITALY"
+            ""
+            "LON S WAL-ENG"
+            "WAL-ENG"
+            "BRE-LON"
+            "ENG C BRE-LON"
+            "IRI C NAF-WAL"
+            "MAO C NAF-WAL"
+            "NAF-WAL"
+            ""
+        } {
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+        }
+    } {
+        "F.16"
+        {
+            "LON F ENGLAND"
+            "WAL F ENGLAND"
+            "BRE A FRANCE"
+            "ENG F FRANCE"
+            "NTH F GERMANY"
+            "BEL F GERMANY"
+            ""
+            "LON S WAL-ENG"
+            "WAL-ENG"
+            "BRE-LON"
+            "ENG C BRE-LON"
+            "NTH S BEL-ENG"
+            "BEL-ENG"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "FAILS"
+        }
+    }
+}
+
+global CDIPPY
+
+foreach pattern $testdata {
+    set name "DATC 6.[lindex $pattern 0]"
+    set input [lindex $pattern 1]
+    set output [lindex $pattern 2]
+
+    if {[lindex $input 0] eq "SKIP"} {
+        untested $name
+        continue
+    }
+
+    eval "spawn $CDIPPY"
+
+    foreach line $input {
+        send "$line\n"
+    }
+
+    set failed 0
+
+    foreach line $output {
+        expect {
+            -re "$line" { }
+            default {
+                fail $name
+                set failed 1
+                break
+            }
+        }
+    }
+
+    if {!$failed} {
+        pass $name
+    }
+}
