@@ -7,6 +7,7 @@
 #include "adjudicator.h"
 
 #define MAX_ORDERS 34
+#define MAX_DEPS 256
 
 struct order orders[MAX_ORDERS];
 size_t orders_n;
@@ -51,7 +52,7 @@ void register_order(enum kind kind,
 enum resolution resolution[MAX_ORDERS];
 enum state state[MAX_ORDERS];
 
-size_t deps[MAX_ORDERS];
+size_t deps[MAX_DEPS];
 size_t deps_n;
 
 enum resolution resolve(size_t o);
@@ -114,13 +115,6 @@ enum resolution resolve(size_t o)
 
     if (state[o] == GUESSING) {
         /* Add "o" to dep list and return the guess */
-        size_t i;
-        for (i = 0; i < deps_n; i++) {
-            if (deps[i] == o) {
-                return resolution[o];
-            }
-        }
-
         deps[deps_n++] = o;
         return resolution[o];
     }
