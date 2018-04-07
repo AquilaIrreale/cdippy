@@ -339,6 +339,34 @@ set testdata {
             "SUCCEEDS"
             "FAILS"
         }
+    } {
+        "F.17"
+        {
+            "LON F ENGLAND"
+            "WAL F ENGLAND"
+            "BRE A FRANCE"
+            "ENG F FRANCE"
+            "YOR F FRANCE"
+            "NTH F GERMANY"
+            "BEL F GERMANY"
+            ""
+            "LON S WAL-ENG"
+            "WAL-ENG"
+            "BRE-LON"
+            "ENG C BRE-LON"
+            "YOR S BRE-LON"
+            "NTH S BEL-ENG"
+            "BEL-ENG"
+            ""
+        } {
+            "SUCCEEDS"
+            "FAILS"
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "FAILS"
+        }
     }
 }
 
