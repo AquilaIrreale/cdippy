@@ -102,6 +102,7 @@ actions = [
     (convoy,       re.compile(r'([AF])\W+([A-Z()\W]+)\W+CONVOYS\W+[AF]\W+([A-Z()\W]+)\W*-\W*([A-Z()\W]+)')),
     (support,      re.compile(r'([AF])\W+([A-Z()\W]+)\W+SUPPORTS\W+[AF]\W+([A-Z()\W]+)\W*-\W*([A-Z()\W]+)')),
     (support_hold, re.compile(r'([AF])\W+([A-Z()\W]+)\W+SUPPORTS\W+[AF]\W+([A-Z()\W]+)')),
+    (move,         re.compile(r'([AF])\W+([A-Z()\W]+)\W*-\W*([A-Z()\W]+)\W+(?:BY|VIA) CONVOY')),
     (move,         re.compile(r'([AF])\W+([A-Z()\W]+)\W*-\W*([A-Z()\W]+)')),
     (hold,         re.compile(r'([AF])\W+([A-Z()\W]+)\W+HOLD'))
 ]
