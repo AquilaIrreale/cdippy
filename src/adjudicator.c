@@ -623,14 +623,13 @@ enum resolution adjudicate(size_t o)
                 return FAILS;
             }
         } else {
-            /* This is a support to move
-             * The order to support must exist and be valid */
+            /* This is a support to move.
+             * The order to support must exist, be a
+             * legal move and be concordant with us */
+
             if (i >= orders_n ||
-                orders[i].kind != MOVE ||
-                orders[i].targ != orders[o].targ ||
-                !path(orders[i].terr,
-                      orders[i].targ,
-                      orders[i].coast)) {
+                !is_legal_move(i, orders[o].terr) ||
+                orders[i].targ != orders[o].targ) {
 
                 return FAILS;
             }
