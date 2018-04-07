@@ -27,6 +27,8 @@ void execute()
 
 int main()
 {
+    clear_all_units();
+
     while (yyparse());
 
     return 0;
