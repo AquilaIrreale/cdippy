@@ -29,7 +29,7 @@ enum nation {
 };
 
 enum territory {
-    INV = -1, /* Force signed */
+    NO_TERR = -1, /* Force signed */
     ADR, AEG, ALB, ANK, APU, ARM,
     BAL, BAR, BEL, BER, BLA, BOH,
     BOT, BRE, BUD, BUL, BUR, CLY,
