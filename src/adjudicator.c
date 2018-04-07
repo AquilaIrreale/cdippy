@@ -287,6 +287,10 @@ bool convoy_path_r(enum territory t1,
 
 bool convoy_path(enum territory t1, enum territory t2, bool strict)
 {
+    if (!is_coast(t1) || !is_coast(t2)) {
+        return false;
+    }
+
     bool *visited = calloc(TERR_N, sizeof *visited);
 
     bool ret = convoy_path_r(t1, t2, t1, visited, strict);
