@@ -75,7 +75,7 @@ void adjudicate_all()
 
 bool convoy_path(enum territory t1, enum territory t2, bool strict);
 
-bool is_legal_move(size_t o)
+bool is_legal_move(size_t o, enum territory exclude)
 {
     /* Must be a move */
     if (orders[o].kind != MOVE) {
@@ -102,7 +102,19 @@ bool is_legal_move(size_t o)
         return true;
     }
 
-    return convoy_path(t1, t2, false);
+    bool occupied_old;
+    if (exclude != NO_TERR) {
+        occupied_old = territories[exclude].occupied;
+        territories[exclude].occupied = false;
+    }
+
+    bool ret = convoy_path(t1, t2, false);
+
+    if (exclude != NO_TERR) {
+        territories[exclude].occupied = occupied_old;
+    }
+
+    return ret;
 }
 
 /* Returns the resolution for order "o"
@@ -331,7 +343,7 @@ unsigned hold_strength(enum territory t)
     size_t o = get_order(t);
 
     /* If order exists and is valid a move */
-    if (o != orders_n && is_legal_move(o)) {
+    if (o != orders_n && is_legal_move(o, NO_TERR)) {
 
         /* Strength is 0 if it succeds, (occupier unit goes away)
          * 1 otherwise
@@ -601,7 +613,7 @@ enum resolution adjudicate(size_t o)
 
         if (orders[o].orig == orders[o].targ) {
             /* This is a support to hold */
-            if (i < orders_n && is_legal_move(i)) {
+            if (i < orders_n && is_legal_move(i, NO_TERR)) {
                 /* Orig unit is ordered a legal move.
                  * An illegal move or no order at all
                  * is treated as a hold. A legal move
