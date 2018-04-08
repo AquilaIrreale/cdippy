@@ -277,7 +277,7 @@ bool convoy_path_r(enum territory t1,
          * the legality of a convoy (no need to check for false
          * positives)
          */
-        if (t == t2 && (cur != t1 || !legality_check)) {
+        if (t == t2 && (cur != t1 || legality_check)) {
             return true;
         }
 
