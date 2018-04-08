@@ -508,32 +508,17 @@ unsigned defend_strength(enum territory t1,
 
 bool head_to_head(enum territory t1, enum territory t2)
 {
-    size_t i;
-    struct order *o1 = NULL;
-    struct order *o2 = NULL;
+    size_t o1 = get_order(t1);
+    size_t o2 = get_order(t2);
 
-    for (i = 0; i < orders_n; i++) {
-        if (orders[i].terr == t1) {
-            o1 = &orders[i];
-        }
-
-        if (orders[i].terr == t2) {
-            o2 = &orders[i];
-        }
-
-        if (o1 && o2) {
-            break;
-        }
-    }
-
-    return o1 != NULL &&
-           o2 != NULL &&
-           o1->kind == MOVE &&
-           o2->kind == MOVE &&
-           o1->targ == t2 &&
-           o2->targ == t1 &&
-           !convoy_path(t1, t2, true) &&
-           !convoy_path(t2, t1, true);
+    return o1 < orders_n &&
+           o2 < orders_n &&
+           orders[o1].kind == MOVE &&
+           orders[o2].kind == MOVE &&
+           orders[o1].targ == t2 &&
+           orders[o2].targ == t1 &&
+           (!convoy_intent(o1) || !convoy_path(t1, t2, true)) &&
+           (!convoy_intent(o2) || !convoy_path(t2, t1, true));
 }
 
 unsigned prevent_strength(enum territory t1,
