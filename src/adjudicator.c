@@ -518,19 +518,28 @@ unsigned defend_strength(enum territory t1,
     return 1 + successful_supports(t1, t2, NO_NATION);
 }
 
-bool head_to_head(enum territory t1, enum territory t2)
+bool head_to_head(enum territory t1, enum territory t2, bool retreat)
 {
-    size_t o1 = get_order(t1);
     size_t o2 = get_order(t2);
 
+    if (o2 >= orders_n ||
+        orders[o2].kind != MOVE ||
+        orders[o2].targ != t1 ||
+        (convoy_intent(o2) && convoy_path(t2, t1, true, true))) {
+
+        return false;
+    }
+
+    if (retreat) {
+        return true;
+    }
+
+    size_t o1 = get_order(t1);
+
     return o1 < orders_n &&
-           o2 < orders_n &&
            orders[o1].kind == MOVE &&
-           orders[o2].kind == MOVE &&
            orders[o1].targ == t2 &&
-           orders[o2].targ == t1 &&
-           (!convoy_intent(o1) || !convoy_path(t1, t2, true, true)) &&
-           (!convoy_intent(o2) || !convoy_path(t2, t1, true, true));
+           (!convoy_intent(o1) || !convoy_path(t1, t2, true, true));
 }
 
 unsigned prevent_strength(enum territory t1,
@@ -541,7 +550,7 @@ unsigned prevent_strength(enum territory t1,
         return 0;
     }
 
-    if (head_to_head(t1, t2) &&
+    if (head_to_head(t1, t2, false) &&
         resolve(get_order(t2)) == SUCCEEDS) {
 
         return 0;
@@ -735,7 +744,7 @@ enum resolution adjudicate(size_t o)
 
         unsigned atk = attack_strength(t1, t2, coast);
 
-        if (head_to_head(t1, t2)) {
+        if (head_to_head(t1, t2, false)) {
             /* It's a head-to-head, use defend_strength */
             if (atk <= defend_strength(t2, t1)) {
                 return FAILS;
