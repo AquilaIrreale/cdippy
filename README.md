@@ -44,18 +44,20 @@ current state of the board. Order statements are, well... orders; they
 follow one of these formats:
 
 ```
-1. Territory - Territory [Coast]
+1. Territory - Territory [Coast] [C]
 2. Territory S Territory
 3. Territory S Territory - Territory
 4. Territory C Territory - Territory
 ```
 
-These are, in order: (1) move (a.k.a. attack), (2) support to hold, (3)
-support to move, (4) convoy. `Coast` is always required when ordering a
-fleet to move to a split coast territory, even when the only available
-destination can be inferred by the starting position of the unit. It
-must never instead be specified when ordering an army. An hold order is
-assumed for every unit that has not received any.
+These are, in order: (1) move (i.e. attack), (2) support to hold, (3)
+support to move, (4) convoy. `Coast` is always required when ordering
+a fleet to move to a split coast territory, even when the only
+available destination can be inferred by the starting position of the
+unit. It must never instead be specified when ordering an army. A `C`
+at the end of a move order specifies it should preferably be carried
+out via convoy. An hold order is assumed for every unit that has not
+received any.
 
 The input language is completely case insensitive; whitespace only
 serves as a separator and can often be omitted, e.g. around `-`s and
