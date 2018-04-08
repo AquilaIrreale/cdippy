@@ -29,6 +29,9 @@ struct order {
                           */
     enum coast coast;    /* Target coast
                           */
+    bool via_convoy;     /* "Via convoy" specifier flag (only for
+                          * moves)
+                          */
 };
 
 extern struct order orders[34];
@@ -38,7 +41,8 @@ void register_order(enum kind kind,
                     enum territory terr,
                     enum territory orig,
                     enum territory targ,
-                    enum coast coast);
+                    enum coast coast,
+                    bool via_convoy);
 
 enum resolution {
     FAILS,

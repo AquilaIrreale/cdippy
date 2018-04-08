@@ -28,7 +28,8 @@ void register_order(enum kind kind,
                     enum territory terr,
                     enum territory orig,
                     enum territory targ,
-                    enum coast coast)
+                    enum coast coast,
+                    bool via_convoy)
 {
     size_t o = get_order(terr);
 
@@ -38,11 +39,12 @@ void register_order(enum kind kind,
         return;
     }
 
-    orders[o].kind = kind;
-    orders[o].terr = terr;
-    orders[o].orig = orig;
-    orders[o].targ = targ;
-    orders[o].coast = coast;
+    orders[o].kind       = kind;
+    orders[o].terr       = terr;
+    orders[o].orig       = orig;
+    orders[o].targ       = targ;
+    orders[o].coast      = coast;
+    orders[o].via_convoy = via_convoy;
 
     if (o == orders_n) {
         orders_n++;
@@ -73,7 +75,10 @@ void adjudicate_all()
     }
 }
 
-bool convoy_path(enum territory t1, enum territory t2, bool strict);
+bool convoy_path(enum territory t1,
+                 enum territory t2,
+                 bool strict,
+                 bool check_outcome);
 
 bool is_legal_move(size_t o, enum territory exclude)
 {
@@ -102,19 +107,44 @@ bool is_legal_move(size_t o, enum territory exclude)
         return true;
     }
 
+    if (!is_land(t2)) {
+        return false;
+    }
+
     bool occupied_old;
     if (exclude != NO_TERR) {
         occupied_old = territories[exclude].occupied;
         territories[exclude].occupied = false;
     }
 
-    bool ret = convoy_path(t1, t2, false);
+    bool ret = convoy_path(t1, t2, false, false);
 
     if (exclude != NO_TERR) {
         territories[exclude].occupied = occupied_old;
     }
 
     return ret;
+}
+
+bool is_legal_convoy(size_t o)
+{
+    struct order *ord = &orders[o];
+
+    if (ord->kind != CONVOY) {
+        return false;
+    }
+
+    if (!territories[ord->terr].occupied) {
+        return false;
+    }
+
+    if (!convoy_path(ord->terr, ord->orig, false, false) ||
+        !convoy_path(ord->terr, ord->targ, false, false)) {
+
+        return false;
+    }
+
+    return true;
 }
 
 /* Returns the resolution for order "o"
@@ -237,7 +267,9 @@ bool convoy_path_r(enum territory t1,
                    enum territory t2,
                    enum territory cur,
                    bool *visited,
-                   bool strict)
+                   bool strict,
+                   bool legality_check,
+                   bool check_outcome)
 {
     /* For each neighbouring sea territory */
     size_t i;
@@ -245,9 +277,11 @@ bool convoy_path_r(enum territory t1,
         enum territory t = territories[cur].sea_neighs[i];
 
         /* If t is our target and we are not on the starting
-         * territory, return with success
+         * territory, return with success; ignore when checking
+         * the legality of a convoy (no need to check for false
+         * positives)
          */
-        if (t == t2 && cur != t1) {
+        if (t == t2 && (cur != t1 || legality_check)) {
             return true;
         }
 
@@ -281,14 +315,14 @@ bool convoy_path_r(enum territory t1,
                 orders[o].kind != CONVOY ||
                 orders[o].orig != t1 ||
                 orders[o].targ != t2 ||
-                resolve(o) == FAILS) {
+                (check_outcome && resolve(o) == FAILS)) {
 
                 continue;
             }
         }
 
         /* A suitable convoy was found in t, explore recursively */
-        if (convoy_path_r(t1, t2, t, visited, strict)) {
+        if (convoy_path_r(t1, t2, t, visited, strict, legality_check, check_outcome)) {
             return true;
         }
     }
@@ -297,18 +331,47 @@ bool convoy_path_r(enum territory t1,
     return false;
 }
 
-bool convoy_path(enum territory t1, enum territory t2, bool strict)
+bool convoy_path(enum territory t1,
+                 enum territory t2,
+                 bool strict,
+                 bool check_outcome)
 {
-    if (!is_coast(t1) || !is_coast(t2)) {
+    bool coast_to_coast = is_coast(t1) && is_coast(t2);
+
+    if (strict && !coast_to_coast) {
         return false;
     }
 
     bool *visited = calloc(TERR_N, sizeof *visited);
 
-    bool ret = convoy_path_r(t1, t2, t1, visited, strict);
+    bool ret = convoy_path_r(t1, t2, t1, visited,
+                             strict, !coast_to_coast, check_outcome);
 
     free(visited);
     return ret;
+}
+
+bool convoy_intent(size_t o)
+{
+    if (orders[o].via_convoy) {
+        return true;
+    }
+
+    enum nation nation = territories[orders[o].terr].nation;
+
+    size_t i;
+    for (i = 0; i < orders_n; i++) {
+        if (orders[i].kind == CONVOY &&
+            territories[orders[i].terr].nation == nation &&
+            orders[i].orig == orders[o].terr &&
+            orders[i].targ == orders[o].targ &&
+            is_legal_convoy(i)) {
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool path(enum territory t1, enum territory t2, enum coast coast)
@@ -325,11 +388,15 @@ bool path(enum territory t1, enum territory t2, enum coast coast)
         return false;
     }
 
-    if (can_reach(t1, t2, ARMY, NONE)) {
-        return true;
+    bool can_reach_ret = can_reach(t1, t2, ARMY, NONE);
+
+    if (!can_reach_ret || (convoy_path(t1, t2, true, false) &&
+                           convoy_intent(get_order(t1)))) {
+
+        return convoy_path(t1, t2, true, true);
     }
 
-    return convoy_path(t1, t2, true);
+    return can_reach_ret;
 }
 
 unsigned hold_strength(enum territory t)
@@ -453,32 +520,17 @@ unsigned defend_strength(enum territory t1,
 
 bool head_to_head(enum territory t1, enum territory t2)
 {
-    size_t i;
-    struct order *o1 = NULL;
-    struct order *o2 = NULL;
+    size_t o1 = get_order(t1);
+    size_t o2 = get_order(t2);
 
-    for (i = 0; i < orders_n; i++) {
-        if (orders[i].terr == t1) {
-            o1 = &orders[i];
-        }
-
-        if (orders[i].terr == t2) {
-            o2 = &orders[i];
-        }
-
-        if (o1 && o2) {
-            break;
-        }
-    }
-
-    return o1 != NULL &&
-           o2 != NULL &&
-           o1->kind == MOVE &&
-           o2->kind == MOVE &&
-           o1->targ == t2 &&
-           o2->targ == t1 &&
-           !convoy_path(t1, t2, true) &&
-           !convoy_path(t2, t1, true);
+    return o1 < orders_n &&
+           o2 < orders_n &&
+           orders[o1].kind == MOVE &&
+           orders[o2].kind == MOVE &&
+           orders[o1].targ == t2 &&
+           orders[o2].targ == t1 &&
+           (!convoy_intent(o1) || !convoy_path(t1, t2, true, true)) &&
+           (!convoy_intent(o2) || !convoy_path(t2, t1, true, true));
 }
 
 unsigned prevent_strength(enum territory t1,
