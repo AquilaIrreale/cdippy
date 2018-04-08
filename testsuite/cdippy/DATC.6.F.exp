@@ -597,7 +597,14 @@ foreach pattern $testdata {
 
     foreach line $output {
         expect {
+            -re "syntax error" {
+                fail $name
+                set failed 1
+                break
+            }
+
             -re "$line" { }
+
             default {
                 fail $name
                 set failed 1
