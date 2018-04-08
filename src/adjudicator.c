@@ -104,6 +104,10 @@ bool is_legal_move(size_t o, enum territory exclude)
         return true;
     }
 
+    if (!is_land(t2)) {
+        return false;
+    }
+
     bool occupied_old;
     if (exclude != NO_TERR) {
         occupied_old = territories[exclude].occupied;
