@@ -271,7 +271,7 @@ set testdata {
             "POR F ITALY"
             "WES F ITALY"
             ""
-            "SPA-POR"
+            "SPA-POR C"
             "MAO C SPA-POR"
             "LYO S POR-SPA"
             "MAR S GAS-SPA"

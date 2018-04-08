@@ -456,7 +456,7 @@ set testdata {
             "NWY-CLY"
             "IRI S MAO-NAO"
             "MAO-NAO"
-            "LVP-CLY"
+            "LVP-CLY C"
             "NAO C LVP-CLY"
             "CLY S NAO"
             ""
