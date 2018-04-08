@@ -14,7 +14,8 @@ class Order:
 
     def order_str(self):
         if self.kind == 'MOVE':
-            return '{}-{}'.format(self.terr, self.targ)
+            return '{}-{}'.format(self.terr, self.targ) \
+                + (" C" if self.via_convoy else "")
 
         elif self.kind == 'SUPPORT':
             return '{} S {}-{}'.format(self.terr, self.orig, self.targ)
@@ -85,7 +86,17 @@ def move(nation, match):
                  nation=nation,
                  unit=match.group(1),
                  terr=simplify(match.group(2)),
-                 targ=simplify(match.group(3)))
+                 targ=simplify(match.group(3)),
+                 via_convoy=False)
+
+
+def move_vc(nation, match):
+    return Order('MOVE',
+                 nation=nation,
+                 unit=match.group(1),
+                 terr=simplify(match.group(2)),
+                 targ=simplify(match.group(3)),
+                 via_convoy=True)
 
 
 def hold(nation, match):
@@ -102,7 +113,7 @@ actions = [
     (convoy,       re.compile(r'([AF])\W+([A-Z()\W]+)\W+CONVOYS\W+[AF]\W+([A-Z()\W]+)\W*-\W*([A-Z()\W]+)')),
     (support,      re.compile(r'([AF])\W+([A-Z()\W]+)\W+SUPPORTS\W+[AF]\W+([A-Z()\W]+)\W*-\W*([A-Z()\W]+)')),
     (support_hold, re.compile(r'([AF])\W+([A-Z()\W]+)\W+SUPPORTS\W+[AF]\W+([A-Z()\W]+)')),
-    (move,         re.compile(r'([AF])\W+([A-Z()\W]+)\W*-\W*([A-Z()\W]+)\W+(?:BY|VIA) CONVOY')),
+    (move_vc,      re.compile(r'([AF])\W+([A-Z()\W]+)\W*-\W*([A-Z()\W]+)\W+(?:BY|VIA) CONVOY')),
     (move,         re.compile(r'([AF])\W+([A-Z()\W]+)\W*-\W*([A-Z()\W]+)')),
     (hold,         re.compile(r'([AF])\W+([A-Z()\W]+)\W+HOLD'))
 ]
