@@ -559,6 +559,33 @@ unsigned prevent_strength(enum territory t1,
     return 1 + successful_supports(t1, t2, NO_NATION);
 }
 
+bool can_retreat(enum territory t1, enum territory t2)
+{
+    if (hold_strength(t2) > 0) {
+        return false;
+    }
+
+    if (head_to_head(t1, t2, true)) {
+        return false;
+    }
+
+    size_t i;
+    for (i = 0; i < orders_n; i++) {
+        if (orders[i].kind == MOVE &&
+            orders[i].targ == t2 &&
+            orders[i].terr != t1) {
+
+            if (prevent_strength(orders[i].terr, t2,
+                                 orders[i].coast) > 0) {
+
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 /* Resolves a circular motion
  */
 void circular_motion(size_t deps_n_old)

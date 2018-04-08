@@ -60,4 +60,7 @@ enum state {
 void adjudicate_all();
 void adjudicator_reset();
 
+bool dislodged(enum territory t);
+bool can_retreat(enum territory t1, enum territory t2);
+
 #endif /* _ADJUDICATOR_H_ */
