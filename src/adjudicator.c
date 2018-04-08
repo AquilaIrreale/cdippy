@@ -28,7 +28,8 @@ void register_order(enum kind kind,
                     enum territory terr,
                     enum territory orig,
                     enum territory targ,
-                    enum coast coast)
+                    enum coast coast,
+                    bool via_convoy)
 {
     size_t o = get_order(terr);
 
@@ -38,11 +39,12 @@ void register_order(enum kind kind,
         return;
     }
 
-    orders[o].kind = kind;
-    orders[o].terr = terr;
-    orders[o].orig = orig;
-    orders[o].targ = targ;
-    orders[o].coast = coast;
+    orders[o].kind       = kind;
+    orders[o].terr       = terr;
+    orders[o].orig       = orig;
+    orders[o].targ       = targ;
+    orders[o].coast      = coast;
+    orders[o].via_convoy = via_convoy;
 
     if (o == orders_n) {
         orders_n++;

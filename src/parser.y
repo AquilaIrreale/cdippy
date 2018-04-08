@@ -52,13 +52,15 @@ order: move_order
      | support_order
      | convoy_order
 
-move_order: TERRITORY '-' TERRITORY       {register_order(MOVE, $1, 0, $3, NONE);}
-          | TERRITORY '-' TERRITORY COAST {register_order(MOVE, $1, 0, $3, $4);}
+move_order: TERRITORY '-' TERRITORY         {register_order(MOVE, $1, 0, $3, NONE, false);}
+          | TERRITORY '-' TERRITORY COAST   {register_order(MOVE, $1, 0, $3,   $4, false);}
+          | TERRITORY '-' TERRITORY C       {register_order(MOVE, $1, 0, $3, NONE, true);}
+          | TERRITORY '-' TERRITORY COAST C {register_order(MOVE, $1, 0, $3,   $4, true);}
 
-support_order: TERRITORY S TERRITORY '-' TERRITORY {register_order(SUPPORT, $1, $3, $5, NONE);}
-             | TERRITORY S TERRITORY               {register_order(SUPPORT, $1, $3, $3, NONE);}
+support_order: TERRITORY S TERRITORY '-' TERRITORY {register_order(SUPPORT, $1, $3, $5, NONE, false);}
+             | TERRITORY S TERRITORY               {register_order(SUPPORT, $1, $3, $3, NONE, false);}
 
-convoy_order: TERRITORY C TERRITORY '-' TERRITORY {register_order(CONVOY, $1, $3, $5, NONE);}
+convoy_order: TERRITORY C TERRITORY '-' TERRITORY {register_order(CONVOY, $1, $3, $5, NONE, false);}
 
 %%
 
