@@ -2,6 +2,7 @@
 #include <config.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "map.h"
 #include "adjudicator.h"
@@ -65,6 +66,7 @@ void yyerror(const char *s)
 {
     fputs(s, stderr);
     fputc('\n', stderr);
+    exit(1);
 }
 
 int yywrap()
