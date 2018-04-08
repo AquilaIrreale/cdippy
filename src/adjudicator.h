@@ -29,9 +29,6 @@ struct order {
                           */
     enum coast coast;    /* Target coast
                           */
-    /*enum nation nation; * Nationality of unit
-                          * to support or convoy
-                          */
 };
 
 extern struct order orders[34];
