@@ -72,10 +72,26 @@ void clear_all_units()
 
 const char *terr_name(enum territory t) {
     static const char *names[TERR_N] = {
-        /* TODO: names */
+        "ADR", "AEG", "Alb", "Ank", "Apu", "Arm",
+        "BAL", "BAR", "Bel", "Ber", "BLA", "Boh",
+        "BOT", "Bre", "Bud", "Bul", "Bur", "Cly",
+        "Con", "Den", "EAS", "Edi", "ENG", "Fin",
+        "Gal", "Gas", "Gre", "HEL", "Hol", "ION",
+        "IRI", "Kie", "Lon", "Lvn", "Lvp", "LYO",
+        "MAO", "Mar", "Mos", "Mun", "NAf", "NAO",
+        "Nap", "NTH", "NWG", "Nwy", "Par", "Pic",
+        "Pie", "Por", "Pru", "Rom", "Ruh", "Rum",
+        "Ser", "Sev", "Sil", "SKA", "Smy", "Spa",
+        "StP", "Swe", "Syr", "TRI", "Tun", "Tus",
+        "Tyr", "TYS", "Ukr", "Ven", "Vie", "Wal",
+        "War", "WES", "Yor"
     };
 
-    return "<Placeholder>";
+    if (t >= sizeof names) {
+        return "<not a territory>";
+    }
+
+    return names[t];
 }
 
 enum unit get_unit(const char *s)
