@@ -52,8 +52,13 @@ void execute()
     orders_n = 0;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+    if (argc > 1) {
+        fputs("cdippy does not take any command-line arguments", stderr);
+        return 1;
+    }
+
     clear_all_units();
 
     while (yyparse());
