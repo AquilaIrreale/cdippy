@@ -25,7 +25,7 @@ void execute()
     enum territory t1;
     for (t1 = 0; t1 < TERR_N; t1++) {
         if (dislodged(t1)) {
-            printf("%llu:", (long long unsigned)t1);
+            printf("%s:", terr_name(t1));
 
             const enum territory *neighs = territories[t1].unit == ARMY
                                          ? territories[t1].land_neighs
@@ -39,7 +39,7 @@ void execute()
                 enum territory t2 = neighs[i];
 
                 if (can_retreat(t1, t2)) {
-                    printf(" %llu", (long long unsigned)t2);
+                    printf(" %s", terr_name(t2));
                 }
             }
 
