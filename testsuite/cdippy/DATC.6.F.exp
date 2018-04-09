@@ -132,8 +132,22 @@ set testdata {
     } {
         "F.7"
         {
-            "SKIP"
+            "NTH F ENGLAND"
+            "LON A ENGLAND"
+            "HEL F GERMANY"
+            "SKA F GERMANY"
+            ""
+            "NTH C LON-HOL"
+            "LON-HOL"
+            "HEL S SKA-NTH"
+            "SKA-NTH"
+            ""
         } {
+            "FAILS"
+            "FAILS"
+            "SUCCEEDS"
+            "SUCCEEDS"
+            "NTH: Bel Den Edi ENG Hol NWG Nwy Yor"
         }
     } {
         "F.8"
