@@ -64,18 +64,23 @@ serves as a separator and can often be omitted, e.g. around `-`s and
 between a territory and its coast, when using the parens form (see
 below).
 
-Once the two blocks have been received, the process of adjudication will
-start. When done, cdippy will write to standard output a list of
+Once the two blocks have been received, the process of adjudication
+will start. When done, cdippy will write to standard output a list of
 resolutions in the form of `Order_#: Resolution` terminated by a blank
-line. `Resolution` can either be `SUCCEEDS` or `FAILS`, depending on the
-outcome of the order designated by `Order_#`. The program is then ready
-to accept another two blocks of statements and perform a new
-adjudication.  cdippy will not update its internal representation of the
-board according to the outcome of a set of orders, but it will keep its
-state between adjudications. To clear a territory of an unit, the
-special state statement `CLEAR Territory` is provided, along the more
-drastic `CLEAR ALL`, which completely resets the state of the board,
-removing every unit currently present, and allowing for a fresh start.
+line. `Resolution` can either be `SUCCEEDS` or `FAILS`, depending on
+the outcome of the order designated by `Order_#`. Then follows another
+block terminated by a blank line, listing every dislodged unit, one
+per line, and the all territories (if any) it can retreat to, in the
+following form: `Territory: [Territory] ...`
+
+The program is then ready to accept another two blocks of statements
+and perform a new adjudication. cdippy will not update its internal
+representation of the board according to the outcome of a set of
+orders, but it will keep its state between adjudications. To clear a
+territory of an unit, the special state statement `CLEAR Territory` is
+provided, along the more drastic `CLEAR ALL`, which completely resets
+the state of the board, removing every unit currently present, and
+allowing for a fresh start.
 
 ### Tokens
 
