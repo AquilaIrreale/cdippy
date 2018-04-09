@@ -14,12 +14,7 @@ The code is based on the algorithms and equations proposed by Lucas
 Kruijswijk in "The Math of Adjudication", available [here][1] for
 reading.
 
-Development will focus on obtaining a working version as soon as
-possible, and then refactoring or rewriting the ugly bits once a stable
-form is reached.
-
-Now [DATC][2] compliant up to and including section [6.E][3] (some tests
-do not apply)
+[DATC][2] compliant (some tests do not apply)
 
 Usage
 -----
