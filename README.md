@@ -21,14 +21,12 @@ Usage
 
 ### Input language
 
-**Note:** the order grammar and the program's interface in general are
-not stable and may be subject to change in the future. Notice also that
-this software is not intended to be used directly by humans, but is
-rather to be thought as a backend "adjudication engine" to be used by
-larger diplomacy-related software. The input protocol can therefore feel
-coarse and rather strict; this is intended, to keep input parsing code
-as simple and straightforward (and at the same time unambiguous) as
-possible. _UI sold separately ;P_
+**Note:** this software is not intended to be used directly by humans, but is
+rather to be thought as a backend "adjudication engine" to be used by larger
+diplomacy-related software. The input protocol can therefore feel coarse and
+rather strict; this is intended, to keep input parsing code as simple and
+straightforward (and at the same time unambiguous) as possible. _UI sold
+separately ;P_
 
 cdippy does not take any command line arguments. Once started, it will
 expect two blocks of statements on its standard input: a state block
