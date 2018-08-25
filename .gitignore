@@ -18,6 +18,7 @@
 /Makefile
 /Makefile.in
 /missing
+/session.vim
 /site.bak
 /site.exp
 /src/.deps/
