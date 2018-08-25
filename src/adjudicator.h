@@ -24,9 +24,8 @@
 
 #include <stddef.h>
 
+#include "cdippy.h"
 #include "map.h"
-
-#define MAX_ORDERS 34
 
 enum kind {
     MOVE,
@@ -65,27 +64,11 @@ void register_order(enum kind kind,
                     enum coast coast,
                     bool via_convoy);
 
-enum resolution {
-    FAILS,
-    SUCCEEDS
-};
-
-extern enum resolution resolutions[34];
-
 enum state {
     UNRESOLVED,
     GUESSING,
     RESOLVED
 };
-
-struct retreat {
-    enum territory who;
-    enum territory where[16];
-    size_t where_n;
-};
-
-extern struct retreat retreats[MAX_ORDERS];
-extern size_t retreats_n;
 
 void adjudicate_all();
 void compute_retreats();
