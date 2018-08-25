@@ -25,7 +25,6 @@
 #include "map.h"
 #include "adjudicator.h"
 
-#define MAX_ORDERS 34
 #define MAX_DEPS 256
 
 struct order orders[MAX_ORDERS];
@@ -70,8 +69,8 @@ void register_order(enum kind kind,
     }
 }
 
-enum resolution resolution[MAX_ORDERS];
-enum state state[MAX_ORDERS];
+enum resolution resolutions[MAX_ORDERS];
+enum state states[MAX_ORDERS];
 
 size_t deps[MAX_DEPS];
 size_t deps_n;
@@ -84,7 +83,7 @@ void adjudicate_all()
 {
     size_t i;
     for (i = 0; i < MAX_ORDERS; i++) {
-        state[i] = UNRESOLVED;
+        states[i] = UNRESOLVED;
     }
 
     deps_n = 0;
@@ -170,31 +169,31 @@ bool is_legal_convoy(size_t o)
  */
 enum resolution resolve(size_t o)
 {
-    if (state[o] == RESOLVED) {
-        return resolution[o];
+    if (states[o] == RESOLVED) {
+        return resolutions[o];
     }
 
-    if (state[o] == GUESSING) {
+    if (states[o] == GUESSING) {
         /* Add "o" to dep list and return the guess */
         deps[deps_n++] = o;
-        return resolution[o];
+        return resolutions[o];
     }
 
     /* Backup deps_n */
     size_t deps_n_old = deps_n;
 
     /* Set order state as GUESSING */
-    resolution[o] = FAILS;
-    state[o] = GUESSING;
+    resolutions[o] = FAILS;
+    states[o] = GUESSING;
 
     /* Adjudicate order */
     enum resolution res1 = adjudicate(o);
 
     if (deps_n == deps_n_old) {
         /* Order does not depend on a guess */
-        if (state[o] != RESOLVED) {
-            resolution[o] = res1;
-            state[o] = RESOLVED;
+        if (states[o] != RESOLVED) {
+            resolutions[o] = res1;
+            states[o] = RESOLVED;
         }
 
         return res1;
@@ -203,7 +202,7 @@ enum resolution resolve(size_t o)
     if (deps[deps_n_old] != o) {
         /* The order depends on a guess that's not our own */
         deps[deps_n++] = o;
-        resolution[o] = res1;
+        resolutions[o] = res1;
         return res1;
     }
 
@@ -212,14 +211,14 @@ enum resolution resolve(size_t o)
      */
     size_t i;
     for (i = deps_n_old; i < deps_n; i++) {
-        state[deps[i]] = UNRESOLVED;
+        states[deps[i]] = UNRESOLVED;
     }
 
     deps_n = deps_n_old;
 
     /* Try the other guess */
-    resolution[o] = SUCCEEDS;
-    state[o] = GUESSING;
+    resolutions[o] = SUCCEEDS;
+    states[o] = GUESSING;
 
     enum resolution res2 = adjudicate(o);
 
@@ -229,13 +228,13 @@ enum resolution resolve(size_t o)
          */
         size_t i;
         for (i = deps_n_old; i < deps_n; i++) {
-            state[deps[i]] = UNRESOLVED;
+            states[deps[i]] = UNRESOLVED;
         }
 
         deps_n = deps_n_old;
 
-        resolution[o] = res1;
-        state[o] = RESOLVED;
+        resolutions[o] = res1;
+        states[o] = RESOLVED;
         return res1;
     }
 
@@ -613,8 +612,8 @@ void circular_motion(size_t deps_n_old)
     size_t i;
     for (i = deps_n_old; i < deps_n; i++) {
         size_t d = deps[i];
-        resolution[d] = SUCCEEDS;
-        state[d] = RESOLVED;
+        resolutions[d] = SUCCEEDS;
+        states[d] = RESOLVED;
     }
 }
 
@@ -627,10 +626,10 @@ void szykman(size_t deps_n_old)
     for (i = deps_n_old; i < deps_n; i++) {
         size_t d = deps[i];
         if (orders[d].kind == CONVOY) {
-            resolution[d] = FAILS;
-            state[d] = RESOLVED;
+            resolutions[d] = FAILS;
+            states[d] = RESOLVED;
         } else {
-            state[d] = UNRESOLVED;
+            states[d] = UNRESOLVED;
         }
     }
 }

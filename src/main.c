@@ -32,10 +32,10 @@ void execute()
 
     size_t i;
     for (i = 0; i < orders_n; i++) {
-        if (resolution[i] == SUCCEEDS) {
-            printf("%llu: SUCCEEDS\n", (long long unsigned)i);
+        if (resolutions[i] == SUCCEEDS) {
+            printf("%zu: SUCCEEDS\n", i);
         } else {
-            printf("%llu: FAILS\n", (long long unsigned)i);
+            printf("%zu: FAILS\n", i);
         }
     }
 

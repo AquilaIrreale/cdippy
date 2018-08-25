@@ -106,7 +106,7 @@ const char *terr_name(enum territory t) {
         "War", "WES", "Yor"
     };
 
-    if (t >= sizeof names) {
+    if (t >= (sizeof names / sizeof *names)) {
         return "<not a territory>";
     }
 

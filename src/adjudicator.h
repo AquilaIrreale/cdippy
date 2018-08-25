@@ -26,6 +26,8 @@
 
 #include "map.h"
 
+#define MAX_ORDERS 34
+
 enum kind {
     MOVE,
     SUPPORT,
@@ -53,7 +55,7 @@ struct order {
                           */
 };
 
-extern struct order orders[34];
+extern struct order orders[MAX_ORDERS];
 extern size_t orders_n;
 
 void register_order(enum kind kind,
@@ -68,7 +70,7 @@ enum resolution {
     SUCCEEDS
 };
 
-extern enum resolution resolution[34];
+extern enum resolution resolutions[34];
 
 enum state {
     UNRESOLVED,
