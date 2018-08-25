@@ -75,6 +75,9 @@ enum state states[MAX_ORDERS];
 size_t deps[MAX_DEPS];
 size_t deps_n;
 
+struct retreat retreats[MAX_ORDERS];
+size_t retreats_n;
+
 enum resolution resolve(size_t o);
 void backup_rule(size_t deps_n_old);
 enum resolution adjudicate(size_t o);
@@ -90,6 +93,41 @@ void adjudicate_all()
 
     for (i = 0; i < orders_n; i++) {
         resolve(i);
+    }
+}
+
+void compute_retreats()
+{
+    retreats_n = 0;
+
+    enum territory t1;
+    for (t1 = 0; t1 < TERR_N; t1++) {
+        if (!dislodged(t1)) {
+            continue;
+        }
+
+        retreats[retreats_n].who = t1;
+
+        const enum territory *neighs = territories[t1].unit == ARMY
+                                     ? territories[t1].land_neighs
+                                     : territories[t1].sea_neighs;
+
+        size_t neighs_n = territories[t1].unit == ARMY
+                        ? territories[t1].land_neighs_n
+                        : territories[t1].sea_neighs_n;
+
+        size_t i, j = 0;
+        for (i = 0; i < neighs_n; i++) {
+            enum territory t2 = neighs[i];
+
+            if (can_retreat(t1, t2)) {
+                retreats[retreats_n].where[j++] = t2;
+            }
+        }
+
+        retreats[retreats_n].where_n = j;
+
+        retreats_n++;
     }
 }
 

@@ -29,6 +29,7 @@
 void execute()
 {
     adjudicate_all();
+    compute_retreats();
 
     size_t i;
     for (i = 0; i < orders_n; i++) {
@@ -41,29 +42,15 @@ void execute()
 
     putchar('\n');
 
-    enum territory t1;
-    for (t1 = 0; t1 < TERR_N; t1++) {
-        if (dislodged(t1)) {
-            printf("%s:", terr_name(t1));
+    for (i = 0; i < retreats_n; i++) {
+        printf("%s:", terr_name(retreats[i].who));
 
-            const enum territory *neighs = territories[t1].unit == ARMY
-                                         ? territories[t1].land_neighs
-                                         : territories[t1].sea_neighs;
-
-            size_t neighs_n = territories[t1].unit == ARMY
-                            ? territories[t1].land_neighs_n
-                            : territories[t1].sea_neighs_n;
-
-            for (i = 0; i < neighs_n; i++) {
-                enum territory t2 = neighs[i];
-
-                if (can_retreat(t1, t2)) {
-                    printf(" %s", terr_name(t2));
-                }
-            }
-
-            putchar('\n');
+        size_t j;
+        for (j = 0; j < retreats[i].where_n; j++) {
+            printf(" %s", terr_name(retreats[i].where[j]));
         }
+
+        putchar('\n');
     }
 
     putchar('\n');

@@ -78,7 +78,17 @@ enum state {
     RESOLVED
 };
 
+struct retreat {
+    enum territory who;
+    enum territory where[16];
+    size_t where_n;
+};
+
+extern struct retreat retreats[MAX_ORDERS];
+extern size_t retreats_n;
+
 void adjudicate_all();
+void compute_retreats();
 void adjudicator_reset();
 
 bool dislodged(enum territory t);
