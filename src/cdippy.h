@@ -59,6 +59,15 @@ struct cd_retreat {
 extern struct cd_retreat cd_retreats[MAX_ORDERS];
 extern size_t cd_retreats_n;
 
+enum {
+    CD_INVALID_TERR = 1,
+    CD_SINGLE_COAST,
+    CD_COAST_NEEDED,
+    CD_COAST_FOR_ARMY,
+    CD_ARMY_IN_SEA,
+    CD_FLEET_ON_LAND
+};
+
 int cd_register_unit(enum cd_terr terr,
                      enum cd_coast coast,
                      enum cd_unit unit,

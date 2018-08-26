@@ -26,49 +26,80 @@
 
 #include "map.h"
 
-void register_unit(enum cd_terr terr,
-                   enum cd_coast coast,
-                   enum cd_unit unit,
-                   enum cd_nation nation)
+int cd_register_unit(enum cd_terr terr,
+                     enum cd_coast coast,
+                     enum cd_unit unit,
+                     enum cd_nation nation)
 {
     if (terr < 0 || terr > TERR_N) {
-        fputs("Territory out of range. Ignored", stderr);
-        return;
+        return CD_INVALID_TERR;
     }
 
     bool single = is_single_coast(terr);
 
     if (single && coast != NO_COAST) {
-        fprintf(stderr, "You are not supposed to specify a coast for %s. Ignored\n",
-        terr_name(terr));
-        return;
+        return CD_SINGLE_COAST;
     }
 
     if (!single && unit == FLEET && coast == NO_COAST) {
-        fprintf(stderr, "You are supposed to specify a coast for %s. Ignored\n",
-        terr_name(terr));
-        return;
+        return CD_COAST_NEEDED;
     }
 
     if (unit != FLEET && coast != NO_COAST) {
-        fputs("You are not supposed to specify a coast if unit is an army. Ignored", stderr);
-        return;
+        return CD_COAST_FOR_ARMY;
     }
 
     if (unit == ARMY && is_inner_sea(terr)) {
-        fputs("Armies can only be placed on land. Ignored", stderr);
-        return;
+        return CD_ARMY_IN_SEA;
     }
 
     if (unit == FLEET && is_inner_land(terr)) {
-        fputs("Fleets cannot be placed on dry land. Ignored", stderr);
-        return;
+        return CD_FLEET_ON_LAND;
     }
 
     territories[terr].occupied = true;
     territories[terr].unit = unit;
     territories[terr].nation = nation;
     territories[terr].coast = coast;
+
+    return 0;
+}
+
+void register_unit(enum cd_terr terr,
+                   enum cd_coast coast,
+                   enum cd_unit unit,
+                   enum cd_nation nation)
+{
+    int ret = cd_register_unit(terr, coast, unit, nation);
+
+    switch (ret) {
+    case CD_INVALID_TERR:
+        fputs("Territory out of range. Ignored", stderr);
+        break;
+
+    case CD_SINGLE_COAST:
+        fprintf(stderr, "You are not supposed to specify a coast for %s. Ignored\n", terr_name(terr));
+        break;
+
+    case CD_COAST_NEEDED:
+        fprintf(stderr, "You are supposed to specify a coast for %s. Ignored\n", terr_name(terr));
+        break;
+
+    case CD_COAST_FOR_ARMY:
+        fputs("You are not supposed to specify a coast if unit is an army. Ignored", stderr);
+        break;
+
+    case CD_ARMY_IN_SEA:
+        fputs("Armies can only be placed on land. Ignored", stderr);
+        break;
+
+    case CD_FLEET_ON_LAND:
+        fputs("Fleets cannot be placed on dry land. Ignored", stderr);
+        break;
+
+    default:
+        break;
+    }
 }
 
 void clear_unit(enum cd_terr terr)
