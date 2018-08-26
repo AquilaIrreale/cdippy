@@ -21,6 +21,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "map.h"
 #include "adjudicator.h"
@@ -51,11 +52,7 @@ void register_order(enum kind kind,
 {
     size_t o = get_order(terr);
 
-    if (o == MAX_ORDERS) {
-        /* Should normally be unreachable */
-        fputs("Too many orders!? Dropping this one\n", stderr);
-        return;
-    }
+    assert(o < MAX_ORDERS);
 
     orders[o].kind       = kind;
     orders[o].terr       = terr;
@@ -67,6 +64,26 @@ void register_order(enum kind kind,
     if (o == orders_n) {
         orders_n++;
     }
+}
+
+void cd_register_move(enum cd_terr t2, enum cd_terr t3, enum cd_coast coast, bool via_convoy)
+{
+    register_order(MOVE, t2, t2, t3, coast, via_convoy);
+}
+
+void cd_register_suph(enum cd_terr t1, enum cd_terr t2)
+{
+    register_order(SUPPORT, t1, t2, t2, NO_COAST, false);
+}
+
+void cd_register_supm(enum cd_terr t1, enum cd_terr t2, enum cd_terr t3)
+{
+    register_order(SUPPORT, t1, t2, t3, NO_COAST, false);
+}
+
+void cd_register_conv(enum cd_terr t1, enum cd_terr t2, enum cd_terr t3)
+{
+    register_order(CONVOY, t1, t2, t3, NO_COAST, false);
 }
 
 enum cd_resolution cd_resolutions[MAX_ORDERS];
