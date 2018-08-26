@@ -148,6 +148,12 @@ void compute_retreats()
     }
 }
 
+void cd_run_adjudicator()
+{
+    adjudicate_all();
+    compute_retreats();
+}
+
 bool convoy_path(enum cd_terr t1,
                  enum cd_terr t2,
                  bool strict,
