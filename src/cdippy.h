@@ -2,6 +2,7 @@
 #define _CDIPPY_H_
 
 #define MAX_ORDERS 34
+#define NATIONS_N 7
 
 enum cd_unit {
     ARMY,
@@ -42,6 +43,9 @@ enum cd_terr {
     WAR, WES, YOR,
     TERR_N
 };
+
+extern const char *cd_nation_names[];
+extern const char *cd_terr_names[];
 
 enum cd_resolution {
     FAILS,

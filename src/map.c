@@ -26,6 +26,27 @@
 
 #include "map.h"
 
+const char *cd_nation_names[] = {
+    "AUSTRIA",  "ENGLAND", "FRANCE",
+    "GERMANY", "ITALY", "RUSSIA", "TURKEY"
+};
+
+const char *cd_terr_names[] = {
+    "ADR", "AEG", "Alb", "Ank", "Apu", "Arm",
+    "BAL", "BAR", "Bel", "Ber", "BLA", "Boh",
+    "BOT", "Bre", "Bud", "Bul", "Bur", "Cly",
+    "Con", "Den", "EAS", "Edi", "ENG", "Fin",
+    "Gal", "Gas", "Gre", "HEL", "Hol", "ION",
+    "IRI", "Kie", "Lon", "Lvn", "Lvp", "LYO",
+    "MAO", "Mar", "Mos", "Mun", "NAf", "NAO",
+    "Nap", "NTH", "NWG", "Nwy", "Par", "Pic",
+    "Pie", "Por", "Pru", "Rom", "Ruh", "Rum",
+    "Ser", "Sev", "Sil", "SKA", "Smy", "Spa",
+    "StP", "Swe", "Syr", "TRI", "Tun", "Tus",
+    "Tyr", "TYS", "Ukr", "Ven", "Vie", "Wal",
+    "War", "WES", "Yor"
+};
+
 int cd_register_unit(enum cd_terr terr,
                      enum cd_coast coast,
                      enum cd_unit unit,
@@ -129,27 +150,11 @@ void clear_all_units()
 }
 
 const char *terr_name(enum cd_terr t) {
-    static const char *names[TERR_N] = {
-        "ADR", "AEG", "Alb", "Ank", "Apu", "Arm",
-        "BAL", "BAR", "Bel", "Ber", "BLA", "Boh",
-        "BOT", "Bre", "Bud", "Bul", "Bur", "Cly",
-        "Con", "Den", "EAS", "Edi", "ENG", "Fin",
-        "Gal", "Gas", "Gre", "HEL", "Hol", "ION",
-        "IRI", "Kie", "Lon", "Lvn", "Lvp", "LYO",
-        "MAO", "Mar", "Mos", "Mun", "NAf", "NAO",
-        "Nap", "NTH", "NWG", "Nwy", "Par", "Pic",
-        "Pie", "Por", "Pru", "Rom", "Ruh", "Rum",
-        "Ser", "Sev", "Sil", "SKA", "Smy", "Spa",
-        "StP", "Swe", "Syr", "TRI", "Tun", "Tus",
-        "Tyr", "TYS", "Ukr", "Ven", "Vie", "Wal",
-        "War", "WES", "Yor"
-    };
-
-    if (t >= (sizeof names / sizeof *names)) {
+    if (t >= (sizeof cd_terr_names / sizeof *cd_terr_names)) {
         return "<not a territory>";
     }
 
-    return names[t];
+    return cd_terr_names[t];
 }
 
 enum cd_unit get_unit(const char *s)
@@ -194,7 +199,7 @@ enum cd_coast get_coast(const char *s)
 
 enum cd_terr get_territory(const char *s)
 {
-    static const char *names[TERR_N] = {
+    static const char *names[] = {
         "adr", "aeg", "alb", "ank", "apu", "arm",
         "bal", "bar", "bel", "ber", "bla", "boh",
         "bot", "bre", "bud", "bul", "bur", "cly",
@@ -231,7 +236,7 @@ enum cd_terr get_territory(const char *s)
 
 enum cd_nation get_nation(const char *s)
 {
-    static const char *names[TERR_N] = {
+    static const char *names[] = {
         "austria",  "england", "france",
         "germany", "italy", "russia", "turkey"
     };
