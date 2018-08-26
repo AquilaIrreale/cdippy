@@ -30,7 +30,7 @@
 struct order orders[MAX_ORDERS];
 size_t orders_n;
 
-size_t get_order(enum territory t)
+size_t get_order(enum cd_terr t)
 {
     size_t i;
     for (i = 0; i < orders_n; i++) {
@@ -43,10 +43,10 @@ size_t get_order(enum territory t)
 }
 
 void register_order(enum kind kind,
-                    enum territory terr,
-                    enum territory orig,
-                    enum territory targ,
-                    enum coast coast,
+                    enum cd_terr terr,
+                    enum cd_terr orig,
+                    enum cd_terr targ,
+                    enum cd_coast coast,
                     bool via_convoy)
 {
     size_t o = get_order(terr);
@@ -69,18 +69,18 @@ void register_order(enum kind kind,
     }
 }
 
-enum resolution resolutions[MAX_ORDERS];
+enum cd_resolution cd_resolutions[MAX_ORDERS];
 enum state states[MAX_ORDERS];
 
 size_t deps[MAX_DEPS];
 size_t deps_n;
 
-struct retreat retreats[MAX_ORDERS];
-size_t retreats_n;
+struct cd_retreat cd_retreats[MAX_ORDERS];
+size_t cd_retreats_n;
 
-enum resolution resolve(size_t o);
+enum cd_resolution resolve(size_t o);
 void backup_rule(size_t deps_n_old);
-enum resolution adjudicate(size_t o);
+enum cd_resolution adjudicate(size_t o);
 
 void adjudicate_all()
 {
@@ -98,17 +98,17 @@ void adjudicate_all()
 
 void compute_retreats()
 {
-    retreats_n = 0;
+    cd_retreats_n = 0;
 
-    enum territory t1;
+    enum cd_terr t1;
     for (t1 = 0; t1 < TERR_N; t1++) {
         if (!dislodged(t1)) {
             continue;
         }
 
-        retreats[retreats_n].who = t1;
+        cd_retreats[cd_retreats_n].who = t1;
 
-        const enum territory *neighs = territories[t1].unit == ARMY
+        const enum cd_terr *neighs = territories[t1].unit == ARMY
                                      ? territories[t1].land_neighs
                                      : territories[t1].sea_neighs;
 
@@ -118,34 +118,34 @@ void compute_retreats()
 
         size_t i, j = 0;
         for (i = 0; i < neighs_n; i++) {
-            enum territory t2 = neighs[i];
+            enum cd_terr t2 = neighs[i];
 
             if (can_retreat(t1, t2)) {
-                retreats[retreats_n].where[j++] = t2;
+                cd_retreats[cd_retreats_n].where[j++] = t2;
             }
         }
 
-        retreats[retreats_n].where_n = j;
+        cd_retreats[cd_retreats_n].where_n = j;
 
-        retreats_n++;
+        cd_retreats_n++;
     }
 }
 
-bool convoy_path(enum territory t1,
-                 enum territory t2,
+bool convoy_path(enum cd_terr t1,
+                 enum cd_terr t2,
                  bool strict,
                  bool check_outcome);
 
-bool is_legal_move(size_t o, enum territory exclude)
+bool is_legal_move(size_t o, enum cd_terr exclude)
 {
     /* Must be a move */
     if (orders[o].kind != MOVE) {
         return false;
     }
 
-    enum territory t1 = orders[o].terr;
-    enum territory t2 = orders[o].targ;
-    enum coast coast = orders[o].coast;
+    enum cd_terr t1 = orders[o].terr;
+    enum cd_terr t2 = orders[o].targ;
+    enum cd_coast coast = orders[o].coast;
 
     if (!territories[t1].occupied) {
         return false;
@@ -155,11 +155,11 @@ bool is_legal_move(size_t o, enum territory exclude)
         return can_reach(t1, t2, FLEET, coast);
     }
 
-    if (coast != NONE) {
+    if (coast != NO_COAST) {
         return false;
     }
 
-    if (can_reach(t1, t2, ARMY, NONE)) {
+    if (can_reach(t1, t2, ARMY, NO_COAST)) {
         return true;
     }
 
@@ -205,32 +205,32 @@ bool is_legal_convoy(size_t o)
 
 /* Returns the resolution for order "o"
  */
-enum resolution resolve(size_t o)
+enum cd_resolution resolve(size_t o)
 {
     if (states[o] == RESOLVED) {
-        return resolutions[o];
+        return cd_resolutions[o];
     }
 
     if (states[o] == GUESSING) {
         /* Add "o" to dep list and return the guess */
         deps[deps_n++] = o;
-        return resolutions[o];
+        return cd_resolutions[o];
     }
 
     /* Backup deps_n */
     size_t deps_n_old = deps_n;
 
     /* Set order state as GUESSING */
-    resolutions[o] = FAILS;
+    cd_resolutions[o] = FAILS;
     states[o] = GUESSING;
 
     /* Adjudicate order */
-    enum resolution res1 = adjudicate(o);
+    enum cd_resolution res1 = adjudicate(o);
 
     if (deps_n == deps_n_old) {
         /* Order does not depend on a guess */
         if (states[o] != RESOLVED) {
-            resolutions[o] = res1;
+            cd_resolutions[o] = res1;
             states[o] = RESOLVED;
         }
 
@@ -240,7 +240,7 @@ enum resolution resolve(size_t o)
     if (deps[deps_n_old] != o) {
         /* The order depends on a guess that's not our own */
         deps[deps_n++] = o;
-        resolutions[o] = res1;
+        cd_resolutions[o] = res1;
         return res1;
     }
 
@@ -255,10 +255,10 @@ enum resolution resolve(size_t o)
     deps_n = deps_n_old;
 
     /* Try the other guess */
-    resolutions[o] = SUCCEEDS;
+    cd_resolutions[o] = SUCCEEDS;
     states[o] = GUESSING;
 
-    enum resolution res2 = adjudicate(o);
+    enum cd_resolution res2 = adjudicate(o);
 
     if (res1 == res2) {
         /* The cycle has a unique solution
@@ -271,7 +271,7 @@ enum resolution resolve(size_t o)
 
         deps_n = deps_n_old;
 
-        resolutions[o] = res1;
+        cd_resolutions[o] = res1;
         states[o] = RESOLVED;
         return res1;
     }
@@ -285,7 +285,7 @@ enum resolution resolve(size_t o)
     return resolve(o);
 }
 
-bool dislodged(enum territory t)
+bool dislodged(enum cd_terr t)
 {
     /* Can't be dislodged if nobody's there */
     if (!territories[t].occupied) {
@@ -319,9 +319,9 @@ bool dislodged(enum territory t)
     return false;
 }
 
-bool convoy_path_r(enum territory t1,
-                   enum territory t2,
-                   enum territory cur,
+bool convoy_path_r(enum cd_terr t1,
+                   enum cd_terr t2,
+                   enum cd_terr cur,
                    bool *visited,
                    bool strict,
                    bool legality_check,
@@ -330,7 +330,7 @@ bool convoy_path_r(enum territory t1,
     /* For each neighbouring sea territory */
     size_t i;
     for (i = 0; i < territories[cur].sea_neighs_n; i++) {
-        enum territory t = territories[cur].sea_neighs[i];
+        enum cd_terr t = territories[cur].sea_neighs[i];
 
         /* If t is our target and we are not on the starting
          * territory, return with success; ignore when checking
@@ -387,8 +387,8 @@ bool convoy_path_r(enum territory t1,
     return false;
 }
 
-bool convoy_path(enum territory t1,
-                 enum territory t2,
+bool convoy_path(enum cd_terr t1,
+                 enum cd_terr t2,
                  bool strict,
                  bool check_outcome)
 {
@@ -413,7 +413,7 @@ bool convoy_intent(size_t o)
         return true;
     }
 
-    enum nation nation = territories[orders[o].terr].nation;
+    enum cd_nation nation = territories[orders[o].terr].nation;
 
     size_t i;
     for (i = 0; i < orders_n; i++) {
@@ -430,7 +430,7 @@ bool convoy_intent(size_t o)
     return false;
 }
 
-bool path(enum territory t1, enum territory t2, enum coast coast)
+bool path(enum cd_terr t1, enum cd_terr t2, enum cd_coast coast)
 {
     if (!territories[t1].occupied) {
         return false;
@@ -440,11 +440,11 @@ bool path(enum territory t1, enum territory t2, enum coast coast)
         return can_reach(t1, t2, FLEET, coast);
     }
 
-    if (coast != NONE) {
+    if (coast != NO_COAST) {
         return false;
     }
 
-    bool can_reach_ret = can_reach(t1, t2, ARMY, NONE);
+    bool can_reach_ret = can_reach(t1, t2, ARMY, NO_COAST);
 
     if (!can_reach_ret || (convoy_path(t1, t2, true, false) &&
                            convoy_intent(get_order(t1)))) {
@@ -455,7 +455,7 @@ bool path(enum territory t1, enum territory t2, enum coast coast)
     return can_reach_ret;
 }
 
-unsigned hold_strength(enum territory t)
+unsigned hold_strength(enum cd_terr t)
 {
     if (!territories[t].occupied) {
         /* t is empty */
@@ -490,15 +490,15 @@ unsigned hold_strength(enum territory t)
     return strength;
 }
 
-unsigned successful_supports(enum territory t1,
-                             enum territory t2,
+unsigned successful_supports(enum cd_terr t1,
+                             enum cd_terr t2,
                              unsigned excluded)
 {
     unsigned ret = 0;
 
     size_t i;
     for (i = 0; i < orders_n; i++) {
-        enum nation sup_nation = territories[orders[i].terr].nation;
+        enum cd_nation sup_nation = territories[orders[i].terr].nation;
         if (orders[i].kind == SUPPORT &&
             orders[i].orig == t1 &&
             orders[i].targ == t2 &&
@@ -512,13 +512,13 @@ unsigned successful_supports(enum territory t1,
     return ret;
 }
 
-unsigned attack_strength_vs(enum territory t1,
-                            enum territory t2,
-                            enum coast coast,
-                            enum nation opponent)
+unsigned attack_strength_vs(enum cd_terr t1,
+                            enum cd_terr t2,
+                            enum cd_coast coast,
+                            enum cd_nation opponent)
 {
     if (territories[t1].unit == ARMY) {
-        coast = NONE;
+        coast = NO_COAST;
     }
 
     if (!path(t1, t2, coast)) {
@@ -538,12 +538,12 @@ unsigned attack_strength_vs(enum territory t1,
     }
 }
 
-unsigned attack_strength(enum territory t1,
-                         enum territory t2,
-                         enum coast coast)
+unsigned attack_strength(enum cd_terr t1,
+                         enum cd_terr t2,
+                         enum cd_coast coast)
 {
     if (territories[t1].unit == ARMY) {
-        coast = NONE;
+        coast = NO_COAST;
     }
 
     if (!path(t1, t2, coast)) {
@@ -568,13 +568,13 @@ unsigned attack_strength(enum territory t1,
     return 1 + successful_supports(t1, t2, territories[t2].nation);
 }
 
-unsigned defend_strength(enum territory t1,
-                         enum territory t2)
+unsigned defend_strength(enum cd_terr t1,
+                         enum cd_terr t2)
 {
     return 1 + successful_supports(t1, t2, NO_NATION);
 }
 
-bool head_to_head(enum territory t1, enum territory t2, bool retreat)
+bool head_to_head(enum cd_terr t1, enum cd_terr t2, bool retreat)
 {
     size_t o2 = get_order(t2);
 
@@ -598,9 +598,9 @@ bool head_to_head(enum territory t1, enum territory t2, bool retreat)
            (!convoy_intent(o1) || !convoy_path(t1, t2, true, true));
 }
 
-unsigned prevent_strength(enum territory t1,
-                          enum territory t2,
-                          enum coast coast)
+unsigned prevent_strength(enum cd_terr t1,
+                          enum cd_terr t2,
+                          enum cd_coast coast)
 {
     if (!path(t1, t2, coast)) {
         return 0;
@@ -615,7 +615,7 @@ unsigned prevent_strength(enum territory t1,
     return 1 + successful_supports(t1, t2, NO_NATION);
 }
 
-bool can_retreat(enum territory t1, enum territory t2)
+bool can_retreat(enum cd_terr t1, enum cd_terr t2)
 {
     if (hold_strength(t2) > 0) {
         return false;
@@ -650,7 +650,7 @@ void circular_motion(size_t deps_n_old)
     size_t i;
     for (i = deps_n_old; i < deps_n; i++) {
         size_t d = deps[i];
-        resolutions[d] = SUCCEEDS;
+        cd_resolutions[d] = SUCCEEDS;
         states[d] = RESOLVED;
     }
 }
@@ -664,7 +664,7 @@ void szykman(size_t deps_n_old)
     for (i = deps_n_old; i < deps_n; i++) {
         size_t d = deps[i];
         if (orders[d].kind == CONVOY) {
-            resolutions[d] = FAILS;
+            cd_resolutions[d] = FAILS;
             states[d] = RESOLVED;
         } else {
             states[d] = UNRESOLVED;
@@ -708,7 +708,7 @@ void backup_rule(size_t deps_n_old)
 
 /* Adjudicates order "o"
  */
-enum resolution adjudicate(size_t o)
+enum cd_resolution adjudicate(size_t o)
 {
     if (!territories[orders[o].terr].occupied) {
         return FAILS;
@@ -780,7 +780,7 @@ enum resolution adjudicate(size_t o)
         }
 
         /* Check if cut */
-        enum territory cur = orders[o].terr;
+        enum cd_terr cur = orders[o].terr;
         for (i = 0; i < orders_n; i++) {
             /* Support is cut by an incoming move */
             if (orders[i].kind != MOVE ||
@@ -789,7 +789,7 @@ enum resolution adjudicate(size_t o)
                 continue;
             }
 
-            enum territory attacker = orders[i].terr;
+            enum cd_terr attacker = orders[i].terr;
 
             /* By another nation */
             if (territories[attacker].nation
@@ -821,9 +821,9 @@ enum resolution adjudicate(size_t o)
     case MOVE:
         ; /* Null statement, otherwise the compiler complains */
 
-        enum territory t1 = orders[o].terr;
-        enum territory t2 = orders[o].targ;
-        enum coast coast = orders[o].coast;
+        enum cd_terr t1 = orders[o].terr;
+        enum cd_terr t2 = orders[o].targ;
+        enum cd_coast coast = orders[o].coast;
 
         unsigned atk = attack_strength(t1, t2, coast);
 

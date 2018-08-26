@@ -36,18 +36,18 @@ enum kind {
 struct order {
     enum kind kind;      /* Type of order */
 
-    enum territory terr; /* Territory the order
+    enum cd_terr terr; /* Territory the order
                           * is addressed to
                           */
-    enum territory orig; /* For convoy and support orders.
+    enum cd_terr orig; /* For convoy and support orders.
                           * Origin of supported/convoyed move
                           */
-    enum territory targ; /* Target territory for moves
+    enum cd_terr targ; /* Target territory for moves
                           * (including convoyed) and support
                           * targ == orig in a "support to hold"
                           * order
                           */
-    enum coast coast;    /* Target coast
+    enum cd_coast coast;    /* Target coast
                           */
     bool via_convoy;     /* "Via convoy" specifier flag (only for
                           * moves)
@@ -58,10 +58,10 @@ extern struct order orders[MAX_ORDERS];
 extern size_t orders_n;
 
 void register_order(enum kind kind,
-                    enum territory terr,
-                    enum territory orig,
-                    enum territory targ,
-                    enum coast coast,
+                    enum cd_terr terr,
+                    enum cd_terr orig,
+                    enum cd_terr targ,
+                    enum cd_coast coast,
                     bool via_convoy);
 
 enum state {
@@ -74,7 +74,7 @@ void adjudicate_all();
 void compute_retreats();
 void adjudicator_reset();
 
-bool dislodged(enum territory t);
-bool can_retreat(enum territory t1, enum territory t2);
+bool dislodged(enum cd_terr t);
+bool can_retreat(enum cd_terr t1, enum cd_terr t2);
 
 #endif /* _ADJUDICATOR_H_ */

@@ -26,10 +26,10 @@
 
 #include "map.h"
 
-void register_unit(enum territory terr,
-                   enum coast coast,
-                   enum unit unit,
-                   enum nation nation)
+void register_unit(enum cd_terr terr,
+                   enum cd_coast coast,
+                   enum cd_unit unit,
+                   enum cd_nation nation)
 {
     if (terr < 0 || terr > TERR_N) {
         fputs("Territory out of range. Ignored", stderr);
@@ -38,19 +38,19 @@ void register_unit(enum territory terr,
 
     bool single = is_single_coast(terr);
 
-    if (single && coast != NONE) {
+    if (single && coast != NO_COAST) {
         fprintf(stderr, "You are not supposed to specify a coast for %s. Ignored\n",
         terr_name(terr));
         return;
     }
 
-    if (!single && unit == FLEET && coast == NONE) {
+    if (!single && unit == FLEET && coast == NO_COAST) {
         fprintf(stderr, "You are supposed to specify a coast for %s. Ignored\n",
         terr_name(terr));
         return;
     }
 
-    if (unit != FLEET && coast != NONE) {
+    if (unit != FLEET && coast != NO_COAST) {
         fputs("You are not supposed to specify a coast if unit is an army. Ignored", stderr);
         return;
     }
@@ -71,7 +71,7 @@ void register_unit(enum territory terr,
     territories[terr].coast = coast;
 }
 
-void clear_unit(enum territory terr)
+void clear_unit(enum cd_terr terr)
 {
     if (terr < 0 || terr > TERR_N) {
         fputs("Territory out of range. Ignored", stderr);
@@ -89,7 +89,7 @@ void clear_all_units()
     }
 }
 
-const char *terr_name(enum territory t) {
+const char *terr_name(enum cd_terr t) {
     static const char *names[TERR_N] = {
         "ADR", "AEG", "Alb", "Ank", "Apu", "Arm",
         "BAL", "BAR", "Bel", "Ber", "BLA", "Boh",
@@ -113,7 +113,7 @@ const char *terr_name(enum territory t) {
     return names[t];
 }
 
-enum unit get_unit(const char *s)
+enum cd_unit get_unit(const char *s)
 {
     if (strlen(s) != 1) {
         return -1;
@@ -126,7 +126,7 @@ enum unit get_unit(const char *s)
          : -1;
 }
 
-enum coast get_coast(const char *s)
+enum cd_coast get_coast(const char *s)
 {
     char buf[2];
     size_t l = strlen(s);
@@ -153,7 +153,7 @@ enum coast get_coast(const char *s)
     }
 }
 
-enum territory get_territory(const char *s)
+enum cd_terr get_territory(const char *s)
 {
     static const char *names[TERR_N] = {
         "adr", "aeg", "alb", "ank", "apu", "arm",
@@ -180,7 +180,7 @@ enum territory get_territory(const char *s)
     char *c = lower;
     while ((*c++ = tolower(*s++)));
 
-    enum territory i;
+    enum cd_terr i;
     for (i = 0; i < TERR_N; i++) {
         if (strcmp(names[i], lower) == 0) {
             return i;
@@ -190,7 +190,7 @@ enum territory get_territory(const char *s)
     return -1;
 }
 
-enum nation get_nation(const char *s)
+enum cd_nation get_nation(const char *s)
 {
     static const char *names[TERR_N] = {
         "austria",  "england", "france",
@@ -206,7 +206,7 @@ enum nation get_nation(const char *s)
     char *c = lower;
     while ((*c++ = tolower(*s++)));
 
-    enum nation i;
+    enum cd_nation i;
     for (i = 0; i < 7; i++) {
         if (strcmp(names[i], lower) == 0) {
             return 1 << i;
@@ -216,26 +216,26 @@ enum nation get_nation(const char *s)
     return -1;
 }
 
-bool is_single_coast(enum territory t)
+bool is_single_coast(enum cd_terr t)
 {
     return t != BUL &&
            t != SPA &&
            t != STP;
 }
 
-bool is_land(enum territory t)
+bool is_land(enum cd_terr t)
 {
     return is_inner_land(t) || is_coast(t);
 }
 
-bool is_sea(enum territory t)
+bool is_sea(enum cd_terr t)
 {
     return is_inner_sea(t) || is_coast(t);
 }
 
-bool is_coast(enum territory t)
+bool is_coast(enum cd_terr t)
 {
-    static enum territory coast[] = {
+    static enum cd_terr coast[] = {
         ALB, ANK, APU, ARM, BEL, BER,
         BRE, BUL, CLY, CON, DEN, EDI,
         FIN, GAS, GRE, HOL, KIE, LON,
@@ -255,9 +255,9 @@ bool is_coast(enum territory t)
     return false;
 }
 
-bool is_inner_land(enum territory t)
+bool is_inner_land(enum cd_terr t)
 {
-    static enum territory inner_land[] = {
+    static enum cd_terr inner_land[] = {
         MOS, UKR, WAR, SER, BUD, GAL,
         BOH, VIE, TYR, SIL, MUN, RUH,
         BUR, PAR
@@ -273,9 +273,9 @@ bool is_inner_land(enum territory t)
     return false;
 }
 
-bool is_inner_sea(enum territory t)
+bool is_inner_sea(enum cd_terr t)
 {
-    static enum territory inner_sea[] = {
+    static enum cd_terr inner_sea[] = {
         BLA, AEG, EAS, ION, ADR, TYS,
         LYO, WES, MAO, NAO, IRI, ENG,
         NWG, NTH, HEL, SKA, BAL, BOT,
@@ -292,8 +292,8 @@ bool is_inner_sea(enum territory t)
     return false;
 }
 
-bool is_land_adjacent(enum territory t1,
-                      enum territory t2)
+bool is_land_adjacent(enum cd_terr t1,
+                      enum cd_terr t2)
 {
     struct terr_info *terr = &territories[t1];
 
@@ -307,8 +307,8 @@ bool is_land_adjacent(enum territory t1,
     return false;
 }
 
-bool is_sea_adjacent(enum territory t1,
-                     enum territory t2)
+bool is_sea_adjacent(enum cd_terr t1,
+                     enum cd_terr t2)
 {
     struct terr_info *terr = &territories[t1];
 
@@ -322,15 +322,15 @@ bool is_sea_adjacent(enum territory t1,
     return false;
 }
 
-bool is_coast_adjacent(enum territory t1,
-                       enum territory t2,
-                       enum coast coast)
+bool is_coast_adjacent(enum cd_terr t1,
+                       enum cd_terr t2,
+                       enum cd_coast coast)
 {
     assert(is_single_coast(t1) &&
            !is_single_coast(t2) &&
-           coast != NONE);
+           coast != NO_COAST);
 
-    static enum territory adj[2][3][6] = {
+    static enum cd_terr adj[2][3][6] = {
         {
             {RUM, BLA, CON, -1},
             {POR, MAO, GAS, -1},
@@ -360,10 +360,10 @@ bool is_coast_adjacent(enum territory t1,
     return false;
 }
 
-bool can_reach(enum territory t1,
-               enum territory t2,
-               enum unit unit,
-               enum coast coast)
+bool can_reach(enum cd_terr t1,
+               enum cd_terr t2,
+               enum cd_unit unit,
+               enum cd_coast coast)
 {
     if (unit == ARMY) {
         return is_land_adjacent(t1, t2);
@@ -375,7 +375,7 @@ bool can_reach(enum territory t1,
         return false;
     }
 
-    if (coast == NONE) {
+    if (coast == NO_COAST) {
         if (!is_single_coast(t2)) {
             return false;
         }
@@ -396,10 +396,10 @@ bool can_reach(enum territory t1,
     return is_coast_adjacent(t1, t2, coast);
 }
 
-bool can_support(enum territory t1,
-                 enum territory t2,
-                 enum unit unit,
-                 enum coast coast)
+bool can_support(enum cd_terr t1,
+                 enum cd_terr t2,
+                 enum cd_unit unit,
+                 enum cd_coast coast)
 {
     if (unit == ARMY) {
         return can_reach(t1, t2, unit, coast);

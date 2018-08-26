@@ -3,18 +3,18 @@
 
 #define MAX_ORDERS 34
 
-enum unit {
+enum cd_unit {
     ARMY,
     FLEET
 };
 
-enum coast {
-    NONE,
+enum cd_coast {
+    NO_COAST,
     NORTH,
     SOUTH
 };
 
-enum nation {
+enum cd_nation {
     NO_NATION =  0,
     AUSTRIA   =  1,
     ENGLAND   =  2,
@@ -25,7 +25,7 @@ enum nation {
     TURKEY    = 64
 };
 
-enum territory {
+enum cd_terr {
     NO_TERR = -1, /* Force signed */
     ADR, AEG, ALB, ANK, APU, ARM,
     BAL, BAR, BEL, BER, BLA, BOH,
@@ -43,20 +43,34 @@ enum territory {
     TERR_N
 };
 
-enum resolution {
+enum cd_resolution {
     FAILS,
     SUCCEEDS
 };
 
-extern enum resolution resolutions[34];
+extern enum cd_resolution cd_resolutions[34];
 
-struct retreat {
-    enum territory who;
-    enum territory where[16];
+struct cd_retreat {
+    enum cd_terr who;
+    enum cd_terr where[16];
     size_t where_n;
 };
 
-extern struct retreat retreats[MAX_ORDERS];
-extern size_t retreats_n;
+extern struct cd_retreat cd_retreats[MAX_ORDERS];
+extern size_t cd_retreats_n;
+
+int cd_register_unit(enum cd_terr terr,
+                     enum cd_coast coast,
+                     enum cd_unit unit,
+                     enum cd_nation nation);
+
+int cd_clear_unit(enum cd_terr terr);
+
+void cd_register_move(enum cd_terr t2, enum cd_terr t3, enum cd_coast coast, bool via_convoy);
+void cd_register_suph(enum cd_terr t1, enum cd_terr t2);
+void cd_register_supm(enum cd_terr t1, enum cd_terr t2, enum cd_terr t3);
+void cd_register_conv(enum cd_terr t1, enum cd_terr t2, enum cd_terr t3);
+
+void cd_run_adjudicator();
 
 #endif /* _CDIPPY_H_ */

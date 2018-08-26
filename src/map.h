@@ -27,25 +27,25 @@
 
 #include "cdippy.h"
 
-const char *terr_name(enum territory t);
+const char *terr_name(enum cd_terr t);
 
-enum unit get_unit(const char *s);
-enum coast get_coast(const char *s);
-enum territory get_territory(const char *s);
-enum nation get_nation(const char *s);
+enum cd_unit get_unit(const char *s);
+enum cd_coast get_coast(const char *s);
+enum cd_terr get_territory(const char *s);
+enum cd_nation get_nation(const char *s);
 
 #define MAX_NEIGH 11
 
 struct terr_info {
     bool occupied;
-    enum unit unit;     /* Unit type   */
-    enum nation nation; /* Unit nation */
-    enum coast coast;   /* For fleets, in applicable territories */
+    enum cd_unit unit;     /* Unit type   */
+    enum cd_nation nation; /* Unit nation */
+    enum cd_coast coast;   /* For fleets, in applicable territories */
 
-    const enum territory sea_neighs[MAX_NEIGH];
+    const enum cd_terr sea_neighs[MAX_NEIGH];
     size_t sea_neighs_n;
 
-    const enum territory land_neighs[MAX_NEIGH];
+    const enum cd_terr land_neighs[MAX_NEIGH];
     size_t land_neighs_n;
 };
 
@@ -53,28 +53,28 @@ struct terr_info {
 
 extern struct terr_info territories[TERR_N];
 
-void register_unit(enum territory terr,
-                   enum coast coast,
-                   enum unit unit,
-                   enum nation nation);
-void clear_unit(enum territory terr);
+void register_unit(enum cd_terr terr,
+                   enum cd_coast coast,
+                   enum cd_unit unit,
+                   enum cd_nation nation);
+void clear_unit(enum cd_terr terr);
 void clear_all_units();
 
-bool is_single_coast(enum territory t);
+bool is_single_coast(enum cd_terr t);
 
-bool is_land(enum territory t);
-bool is_sea(enum territory t);
-bool is_coast(enum territory t);
-bool is_inner_land(enum territory t);
-bool is_inner_sea(enum territory t);
+bool is_land(enum cd_terr t);
+bool is_sea(enum cd_terr t);
+bool is_coast(enum cd_terr t);
+bool is_inner_land(enum cd_terr t);
+bool is_inner_sea(enum cd_terr t);
 
-bool can_reach(enum territory t1,
-               enum territory t2,
-               enum unit unit,
-               enum coast coast);
-bool can_support(enum territory t1,
-                 enum territory t2,
-                 enum unit unit,
-                 enum coast coast);
+bool can_reach(enum cd_terr t1,
+               enum cd_terr t2,
+               enum cd_unit unit,
+               enum cd_coast coast);
+bool can_support(enum cd_terr t1,
+                 enum cd_terr t2,
+                 enum cd_unit unit,
+                 enum cd_coast coast);
 
 #endif /* _MAP_H_ */

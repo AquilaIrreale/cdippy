@@ -62,7 +62,7 @@ state_list: /* Nothing */
 orders_list: /* Nothing */
            | orders_list order '\n'
 
-state_directive: TERRITORY UNIT NATION {register_unit($1, NONE, $2, $3);}
+state_directive: TERRITORY UNIT NATION {register_unit($1, NO_COAST, $2, $3);}
                | TERRITORY COAST UNIT NATION {register_unit($1, $2, $3, $4);}
                | CLEAR TERRITORY {clear_unit($2);}
                | CLEAR_ALL {clear_all_units();}
@@ -71,15 +71,15 @@ order: move_order
      | support_order
      | convoy_order
 
-move_order: TERRITORY '-' TERRITORY         {register_order(MOVE, $1, 0, $3, NONE, false);}
+move_order: TERRITORY '-' TERRITORY         {register_order(MOVE, $1, 0, $3, NO_COAST, false);}
           | TERRITORY '-' TERRITORY COAST   {register_order(MOVE, $1, 0, $3,   $4, false);}
-          | TERRITORY '-' TERRITORY C       {register_order(MOVE, $1, 0, $3, NONE, true);}
+          | TERRITORY '-' TERRITORY C       {register_order(MOVE, $1, 0, $3, NO_COAST, true);}
           | TERRITORY '-' TERRITORY COAST C {register_order(MOVE, $1, 0, $3,   $4, true);}
 
-support_order: TERRITORY S TERRITORY '-' TERRITORY {register_order(SUPPORT, $1, $3, $5, NONE, false);}
-             | TERRITORY S TERRITORY               {register_order(SUPPORT, $1, $3, $3, NONE, false);}
+support_order: TERRITORY S TERRITORY '-' TERRITORY {register_order(SUPPORT, $1, $3, $5, NO_COAST, false);}
+             | TERRITORY S TERRITORY               {register_order(SUPPORT, $1, $3, $3, NO_COAST, false);}
 
-convoy_order: TERRITORY C TERRITORY '-' TERRITORY {register_order(CONVOY, $1, $3, $5, NONE, false);}
+convoy_order: TERRITORY C TERRITORY '-' TERRITORY {register_order(CONVOY, $1, $3, $5, NO_COAST, false);}
 
 %%
 

@@ -33,7 +33,7 @@ void execute()
 
     size_t i;
     for (i = 0; i < orders_n; i++) {
-        if (resolutions[i] == SUCCEEDS) {
+        if (cd_resolutions[i] == SUCCEEDS) {
             printf("%zu: SUCCEEDS\n", i);
         } else {
             printf("%zu: FAILS\n", i);
@@ -42,12 +42,12 @@ void execute()
 
     putchar('\n');
 
-    for (i = 0; i < retreats_n; i++) {
-        printf("%s:", terr_name(retreats[i].who));
+    for (i = 0; i < cd_retreats_n; i++) {
+        printf("%s:", terr_name(cd_retreats[i].who));
 
         size_t j;
-        for (j = 0; j < retreats[i].where_n; j++) {
-            printf(" %s", terr_name(retreats[i].where[j]));
+        for (j = 0; j < cd_retreats[i].where_n; j++) {
+            printf(" %s", terr_name(cd_retreats[i].where[j]));
         }
 
         putchar('\n');
