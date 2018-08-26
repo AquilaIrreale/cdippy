@@ -12,6 +12,8 @@ AC_CONFIG_FILES([Makefile])
 AC_PROG_CC
 AC_PROG_LEX
 AC_PROG_YACC
+AC_PROG_RANLIB
+AM_PROG_AR
 
 # Checks for libraries.
 

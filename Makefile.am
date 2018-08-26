@@ -12,10 +12,15 @@ cdippy_SOURCES = src/adjudicator.c \
                  src/parser.y \
                  src/territories.c
 
+noinst_LIBRARIES = libcdippy.a
+libcdippy_a_SOURCES = src/adjudicator.c \
+                      src/map.c \
+                      src/territories.c
+
 CLEANFILES = src/parser.h \
              src/parser.c \
              src/lexer.c
 
-EXTRA_DIST = README.md testsuite
+EXTRA_DIST = README.md testsuite cdippy.h
 RUNTESTDEFAULTFLAGS = --all --tool cdippy CDIPPY=./cdippy \
                       --srcdir $$srcdir/testsuite
