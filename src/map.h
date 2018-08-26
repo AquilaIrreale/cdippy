@@ -25,7 +25,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#include "cdippy.h"
+#include <cdippy.h>
 
 const char *terr_name(enum cd_terr t);
 

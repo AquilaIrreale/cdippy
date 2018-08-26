@@ -24,7 +24,7 @@
 
 #include <stddef.h>
 
-#include "cdippy.h"
+#include <cdippy.h>
 #include "map.h"
 
 enum kind {
