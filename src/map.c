@@ -102,14 +102,22 @@ void register_unit(enum cd_terr terr,
     }
 }
 
-void clear_unit(enum cd_terr terr)
+int cd_clear_unit(enum cd_terr terr)
 {
     if (terr < 0 || terr > TERR_N) {
-        fputs("Territory out of range. Ignored", stderr);
-        return;
+        return CD_INVALID_TERR;
     }
 
     territories[terr].occupied = false;
+
+    return 0;
+}
+
+void clear_unit(enum cd_terr terr)
+{
+    if (cd_clear_unit(terr)) {
+        fputs("Territory out of range. Ignored", stderr);
+    }
 }
 
 void clear_all_units()
