@@ -1,6 +1,8 @@
 #ifndef _CDIPPY_H_
 #define _CDIPPY_H_
 
+#include <stdbool.h>
+
 #define MAX_ORDERS 34
 #define NATIONS_N 7
 
