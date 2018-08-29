@@ -42,7 +42,7 @@ const char *cd_terr_names[] = {
     "Nap", "NTH", "NWG", "Nwy", "Par", "Pic",
     "Pie", "Por", "Pru", "Rom", "Ruh", "Rum",
     "Ser", "Sev", "Sil", "SKA", "Smy", "Spa",
-    "StP", "Swe", "Syr", "TRI", "Tun", "Tus",
+    "StP", "Swe", "Syr", "Tri", "Tun", "Tus",
     "Tyr", "TYS", "Ukr", "Ven", "Vie", "Wal",
     "War", "WES", "Yor"
 };
