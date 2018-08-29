@@ -29,11 +29,6 @@
 
 const char *terr_name(enum cd_terr t);
 
-enum cd_unit get_unit(const char *s);
-enum cd_coast get_coast(const char *s);
-enum cd_terr get_territory(const char *s);
-enum cd_nation get_nation(const char *s);
-
 #define MAX_NEIGH 11
 
 struct terr_info {
