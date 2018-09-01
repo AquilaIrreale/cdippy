@@ -61,7 +61,7 @@ void execute()
 int main(int argc, char *argv[])
 {
     if (argc > 1) {
-        fputs("cdippy does not take any command-line arguments", stderr);
+        fprintf(stderr, "%s: no command-line argument supported\n", argv[0]);
         return 1;
     }
 
