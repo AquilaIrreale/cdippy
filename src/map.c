@@ -151,7 +151,7 @@ void cd_clear_all_units()
 
 const char *cd_terr_name(enum cd_terr t) {
     if (t < 0 ||
-        t >= (sizeof cd_terr_names / sizeof *cd_terr_names)) {
+        t >= TERR_N) {
         return "<not a territory>";
     }
 
