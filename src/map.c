@@ -56,7 +56,7 @@ int cd_register_unit(enum cd_terr terr,
         return CD_INVALID_TERR;
     }
 
-    bool single = is_single_coast(terr);
+    bool single = cd_is_single_coast(terr);
 
     if (single && coast != NO_COAST) {
         return CD_SINGLE_COAST;
@@ -70,11 +70,11 @@ int cd_register_unit(enum cd_terr terr,
         return CD_COAST_FOR_ARMY;
     }
 
-    if (unit == ARMY && is_inner_sea(terr)) {
+    if (unit == ARMY && cd_is_inner_sea(terr)) {
         return CD_ARMY_IN_SEA;
     }
 
-    if (unit == FLEET && is_inner_land(terr)) {
+    if (unit == FLEET && cd_is_inner_land(terr)) {
         return CD_FLEET_ON_LAND;
     }
 
@@ -86,10 +86,10 @@ int cd_register_unit(enum cd_terr terr,
     return 0;
 }
 
-void register_unit(enum cd_terr terr,
-                   enum cd_coast coast,
-                   enum cd_unit unit,
-                   enum cd_nation nation)
+void cd_register_unit_internal(enum cd_terr terr,
+                               enum cd_coast coast,
+                               enum cd_unit unit,
+                               enum cd_nation nation)
 {
     int ret = cd_register_unit(terr, coast, unit, nation);
 
@@ -99,11 +99,11 @@ void register_unit(enum cd_terr terr,
         break;
 
     case CD_SINGLE_COAST:
-        fprintf(stderr, "You are not supposed to specify a coast for %s. Ignored\n", terr_name(terr));
+        fprintf(stderr, "You are not supposed to specify a coast for %s. Ignored\n", cd_terr_name(terr));
         break;
 
     case CD_COAST_NEEDED:
-        fprintf(stderr, "You are supposed to specify a coast for %s. Ignored\n", terr_name(terr));
+        fprintf(stderr, "You are supposed to specify a coast for %s. Ignored\n", cd_terr_name(terr));
         break;
 
     case CD_COAST_FOR_ARMY:
@@ -134,14 +134,14 @@ int cd_clear_unit(enum cd_terr terr)
     return 0;
 }
 
-void clear_unit(enum cd_terr terr)
+void cd_clear_unit_internal(enum cd_terr terr)
 {
     if (cd_clear_unit(terr)) {
         fputs("Territory out of range. Ignored", stderr);
     }
 }
 
-void clear_all_units()
+void cd_clear_all_units()
 {
     size_t i;
     for (i = 0; i < TERR_N; i++) {
@@ -149,7 +149,7 @@ void clear_all_units()
     }
 }
 
-const char *terr_name(enum cd_terr t) {
+const char *cd_terr_name(enum cd_terr t) {
     if (t < 0 ||
         t >= (sizeof cd_terr_names / sizeof *cd_terr_names)) {
         return "<not a territory>";
@@ -158,24 +158,24 @@ const char *terr_name(enum cd_terr t) {
     return cd_terr_names[t];
 }
 
-bool is_single_coast(enum cd_terr t)
+bool cd_is_single_coast(enum cd_terr t)
 {
     return t != BUL &&
            t != SPA &&
            t != STP;
 }
 
-bool is_land(enum cd_terr t)
+bool cd_is_land(enum cd_terr t)
 {
-    return is_inner_land(t) || is_coast(t);
+    return cd_is_inner_land(t) || cd_is_coast(t);
 }
 
-bool is_sea(enum cd_terr t)
+bool cd_is_sea(enum cd_terr t)
 {
-    return is_inner_sea(t) || is_coast(t);
+    return cd_is_inner_sea(t) || cd_is_coast(t);
 }
 
-bool is_coast(enum cd_terr t)
+bool cd_is_coast(enum cd_terr t)
 {
     static enum cd_terr coast[] = {
         ALB, ANK, APU, ARM, BEL, BER,
@@ -197,7 +197,7 @@ bool is_coast(enum cd_terr t)
     return false;
 }
 
-bool is_inner_land(enum cd_terr t)
+bool cd_is_inner_land(enum cd_terr t)
 {
     static enum cd_terr inner_land[] = {
         MOS, UKR, WAR, SER, BUD, GAL,
@@ -215,7 +215,7 @@ bool is_inner_land(enum cd_terr t)
     return false;
 }
 
-bool is_inner_sea(enum cd_terr t)
+bool cd_is_inner_sea(enum cd_terr t)
 {
     static enum cd_terr inner_sea[] = {
         BLA, AEG, EAS, ION, ADR, TYS,
@@ -234,7 +234,7 @@ bool is_inner_sea(enum cd_terr t)
     return false;
 }
 
-bool is_land_adjacent(enum cd_terr t1,
+bool cd_is_land_adjacent(enum cd_terr t1,
                       enum cd_terr t2)
 {
     struct terr_info *terr = &territories[t1];
@@ -249,7 +249,7 @@ bool is_land_adjacent(enum cd_terr t1,
     return false;
 }
 
-bool is_sea_adjacent(enum cd_terr t1,
+bool cd_is_sea_adjacent(enum cd_terr t1,
                      enum cd_terr t2)
 {
     struct terr_info *terr = &territories[t1];
@@ -264,12 +264,12 @@ bool is_sea_adjacent(enum cd_terr t1,
     return false;
 }
 
-bool is_coast_adjacent(enum cd_terr t1,
+bool cd_is_coast_adjacent(enum cd_terr t1,
                        enum cd_terr t2,
                        enum cd_coast coast)
 {
-    assert(is_single_coast(t1) &&
-           !is_single_coast(t2) &&
+    assert(cd_is_single_coast(t1) &&
+           !cd_is_single_coast(t2) &&
            coast != NO_COAST);
 
     static enum cd_terr adj[2][3][6] = {
@@ -302,55 +302,55 @@ bool is_coast_adjacent(enum cd_terr t1,
     return false;
 }
 
-bool can_reach(enum cd_terr t1,
+bool cd_can_reach(enum cd_terr t1,
                enum cd_terr t2,
                enum cd_unit unit,
                enum cd_coast coast)
 {
     if (unit == ARMY) {
-        return is_land_adjacent(t1, t2);
+        return cd_is_land_adjacent(t1, t2);
     }
 
-    bool sea_adjacent = is_sea_adjacent(t1, t2);
+    bool sea_adjacent = cd_is_sea_adjacent(t1, t2);
 
     if (!sea_adjacent) {
         return false;
     }
 
     if (coast == NO_COAST) {
-        if (!is_single_coast(t2)) {
+        if (!cd_is_single_coast(t2)) {
             return false;
         }
 
-        if (is_single_coast(t1)) {
+        if (cd_is_single_coast(t1)) {
             return sea_adjacent;
         }
 
         coast = territories[t1].coast;
 
-        return is_coast_adjacent(t2, t1, coast);
+        return cd_is_coast_adjacent(t2, t1, coast);
     }
                            /*      Unnecessary       */
-    if (is_single_coast(t2)/* || !is_single_coast(t1)*/) {
+    if (cd_is_single_coast(t2)/* || !cd_is_single_coast(t1)*/) {
         return false;
     }
 
-    return is_coast_adjacent(t1, t2, coast);
+    return cd_is_coast_adjacent(t1, t2, coast);
 }
 
-bool can_support(enum cd_terr t1,
+bool cd_can_support(enum cd_terr t1,
                  enum cd_terr t2,
                  enum cd_unit unit,
                  enum cd_coast coast)
 {
     if (unit == ARMY) {
-        return can_reach(t1, t2, unit, coast);
+        return cd_can_reach(t1, t2, unit, coast);
     }
 
-    if (is_single_coast(t1)) {
-        return is_sea_adjacent(t1, t2);
-    } else if (!is_single_coast(t1) && is_single_coast(t2)) {
-        return can_reach(t2, t1, unit, coast);
+    if (cd_is_single_coast(t1)) {
+        return cd_is_sea_adjacent(t1, t2);
+    } else if (!cd_is_single_coast(t1) && cd_is_single_coast(t2)) {
+        return cd_can_reach(t2, t1, unit, coast);
     } else {
         return false;
     }

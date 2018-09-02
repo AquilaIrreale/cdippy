@@ -27,7 +27,7 @@
 
 #include <cdippy.h>
 
-const char *terr_name(enum cd_terr t);
+const char *cd_terr_name(enum cd_terr t);
 
 #define MAX_NEIGH 11
 
@@ -48,28 +48,28 @@ struct terr_info {
 
 extern struct terr_info territories[TERR_N];
 
-void register_unit(enum cd_terr terr,
-                   enum cd_coast coast,
-                   enum cd_unit unit,
-                   enum cd_nation nation);
-void clear_unit(enum cd_terr terr);
-void clear_all_units();
+void cd_register_unit_internal(enum cd_terr terr,
+                               enum cd_coast coast,
+                               enum cd_unit unit,
+                               enum cd_nation nation);
+void cd_clear_unit_internal(enum cd_terr terr);
+void cd_clear_all_units();
 
-bool is_single_coast(enum cd_terr t);
+bool cd_is_single_coast(enum cd_terr t);
 
-bool is_land(enum cd_terr t);
-bool is_sea(enum cd_terr t);
-bool is_coast(enum cd_terr t);
-bool is_inner_land(enum cd_terr t);
-bool is_inner_sea(enum cd_terr t);
+bool cd_is_land(enum cd_terr t);
+bool cd_is_sea(enum cd_terr t);
+bool cd_is_coast(enum cd_terr t);
+bool cd_is_inner_land(enum cd_terr t);
+bool cd_is_inner_sea(enum cd_terr t);
 
-bool can_reach(enum cd_terr t1,
-               enum cd_terr t2,
-               enum cd_unit unit,
-               enum cd_coast coast);
-bool can_support(enum cd_terr t1,
-                 enum cd_terr t2,
-                 enum cd_unit unit,
-                 enum cd_coast coast);
+bool cd_can_reach(enum cd_terr t1,
+                  enum cd_terr t2,
+                  enum cd_unit unit,
+                  enum cd_coast coast);
+bool cd_can_support(enum cd_terr t1,
+                    enum cd_terr t2,
+                    enum cd_unit unit,
+                    enum cd_coast coast);
 
 #endif /* _MAP_H_ */

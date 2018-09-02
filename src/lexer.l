@@ -25,10 +25,10 @@
 #include "map.h"
 #include "parser.h"
 
-enum cd_unit get_unit(const char *s);
-enum cd_coast get_coast(const char *s);
-enum cd_terr get_territory(const char *s);
-enum cd_nation get_nation(const char *s);
+enum cd_unit cd_get_unit(const char *s);
+enum cd_coast cd_get_coast(const char *s);
+enum cd_terr cd_get_territory(const char *s);
+enum cd_nation cd_get_nation(const char *s);
 %}
 
 %%
@@ -40,7 +40,7 @@ enum cd_nation get_nation(const char *s);
 [Cc][Ll][Ee][Aa][Rr] {return CLEAR;}
 
 \([NSns][Cc]\) {
-    yylval.i = get_coast(yytext);
+    yylval.i = cd_get_coast(yytext);
     return COAST;
 }
 
@@ -59,22 +59,22 @@ enum cd_nation get_nation(const char *s);
         }
 
         ret = UNIT;
-        yylval.i = get_unit(yytext);
+        yylval.i = cd_get_unit(yytext);
         break;
 
     case 2:
         ret = COAST;
-        yylval.i = get_coast(yytext);
+        yylval.i = cd_get_coast(yytext);
         break;
 
     case 3:
         ret = TERRITORY;
-        yylval.i = get_territory(yytext);
+        yylval.i = cd_get_territory(yytext);
         break;
 
     default:
         ret = NATION;
-        yylval.i = get_nation(yytext);
+        yylval.i = cd_get_nation(yytext);
     }
 
     if (yylval.i < 0) {
@@ -89,7 +89,7 @@ enum cd_nation get_nation(const char *s);
 
 %%
 
-enum cd_unit get_unit(const char *s)
+enum cd_unit cd_get_unit(const char *s)
 {
     if (strlen(s) != 1) {
         return -1;
@@ -102,7 +102,7 @@ enum cd_unit get_unit(const char *s)
          : -1;
 }
 
-enum cd_coast get_coast(const char *s)
+enum cd_coast cd_get_coast(const char *s)
 {
     char buf[2];
     size_t l = strlen(s);
@@ -122,14 +122,14 @@ enum cd_coast get_coast(const char *s)
 
     if (buf[0] == 'n' && buf[1] == 'c') {
         return NORTH;
-    } else if(buf[0] == 's' && buf[1] == 'c') {
+    } else if (buf[0] == 's' && buf[1] == 'c') {
         return SOUTH;
     } else {
         return -1;
     }
 }
 
-enum cd_terr get_territory(const char *s)
+enum cd_terr cd_get_territory(const char *s)
 {
     static const char *names[] = {
         "adr", "aeg", "alb", "ank", "apu", "arm",
@@ -166,7 +166,7 @@ enum cd_terr get_territory(const char *s)
     return -1;
 }
 
-enum cd_nation get_nation(const char *s)
+enum cd_nation cd_get_nation(const char *s)
 {
     static const char *names[] = {
         "austria",  "england", "france",

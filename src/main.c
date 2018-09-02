@@ -26,10 +26,10 @@
 #include "map.h"
 #include "adjudicator.h"
 
-void execute()
+void cd_execute()
 {
-    adjudicate_all();
-    compute_retreats();
+    cd_adjudicate_all();
+    cd_compute_retreats();
 
     size_t i;
     for (i = 0; i < orders_n; i++) {
@@ -43,11 +43,11 @@ void execute()
     putchar('\n');
 
     for (i = 0; i < cd_retreats_n; i++) {
-        printf("%s:", terr_name(cd_retreats[i].who));
+        printf("%s:", cd_terr_name(cd_retreats[i].who));
 
         size_t j;
         for (j = 0; j < cd_retreats[i].where_n; j++) {
-            printf(" %s", terr_name(cd_retreats[i].where[j]));
+            printf(" %s", cd_terr_name(cd_retreats[i].where[j]));
         }
 
         putchar('\n');
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    clear_all_units();
+    cd_clear_all_units();
 
     while (yyparse());
 

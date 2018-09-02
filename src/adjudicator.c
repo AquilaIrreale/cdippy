@@ -31,7 +31,7 @@
 struct order orders[MAX_ORDERS];
 size_t orders_n;
 
-size_t get_order(enum cd_terr t)
+size_t cd_get_order(enum cd_terr t)
 {
     size_t i;
     for (i = 0; i < orders_n; i++) {
@@ -43,14 +43,14 @@ size_t get_order(enum cd_terr t)
     return i;
 }
 
-void register_order(enum kind kind,
+void cd_register_order(enum kind kind,
                     enum cd_terr terr,
                     enum cd_terr orig,
                     enum cd_terr targ,
                     enum cd_coast coast,
                     bool via_convoy)
 {
-    size_t o = get_order(terr);
+    size_t o = cd_get_order(terr);
 
     assert(o < MAX_ORDERS);
 
@@ -68,22 +68,22 @@ void register_order(enum kind kind,
 
 void cd_register_move(enum cd_terr t2, enum cd_terr t3, enum cd_coast coast, bool via_convoy)
 {
-    register_order(MOVE, t2, t2, t3, coast, via_convoy);
+    cd_register_order(MOVE, t2, t2, t3, coast, via_convoy);
 }
 
 void cd_register_suph(enum cd_terr t1, enum cd_terr t2)
 {
-    register_order(SUPPORT, t1, t2, t2, NO_COAST, false);
+    cd_register_order(SUPPORT, t1, t2, t2, NO_COAST, false);
 }
 
 void cd_register_supm(enum cd_terr t1, enum cd_terr t2, enum cd_terr t3)
 {
-    register_order(SUPPORT, t1, t2, t3, NO_COAST, false);
+    cd_register_order(SUPPORT, t1, t2, t3, NO_COAST, false);
 }
 
 void cd_register_conv(enum cd_terr t1, enum cd_terr t2, enum cd_terr t3)
 {
-    register_order(CONVOY, t1, t2, t3, NO_COAST, false);
+    cd_register_order(CONVOY, t1, t2, t3, NO_COAST, false);
 }
 
 enum cd_resolution cd_resolutions[MAX_ORDERS];
@@ -95,11 +95,11 @@ size_t deps_n;
 struct cd_retreat cd_retreats[MAX_ORDERS];
 size_t cd_retreats_n;
 
-enum cd_resolution resolve(size_t o);
-void backup_rule(size_t deps_n_old);
-enum cd_resolution adjudicate(size_t o);
+enum cd_resolution cd_resolve(size_t o);
+void cd_backup_rule(size_t deps_n_old);
+enum cd_resolution cd_adjudicate(size_t o);
 
-void adjudicate_all()
+void cd_adjudicate_all()
 {
     size_t i;
     for (i = 0; i < MAX_ORDERS; i++) {
@@ -109,17 +109,17 @@ void adjudicate_all()
     deps_n = 0;
 
     for (i = 0; i < orders_n; i++) {
-        resolve(i);
+        cd_resolve(i);
     }
 }
 
-void compute_retreats()
+void cd_compute_retreats()
 {
     cd_retreats_n = 0;
 
     enum cd_terr t1;
     for (t1 = 0; t1 < TERR_N; t1++) {
-        if (!dislodged(t1)) {
+        if (!cd_dislodged(t1)) {
             continue;
         }
 
@@ -137,7 +137,7 @@ void compute_retreats()
         for (i = 0; i < neighs_n; i++) {
             enum cd_terr t2 = neighs[i];
 
-            if (can_retreat(t1, t2)) {
+            if (cd_can_retreat(t1, t2)) {
                 cd_retreats[cd_retreats_n].where[j++] = t2;
             }
         }
@@ -150,16 +150,16 @@ void compute_retreats()
 
 void cd_run_adjudicator()
 {
-    adjudicate_all();
-    compute_retreats();
+    cd_adjudicate_all();
+    cd_compute_retreats();
 }
 
-bool convoy_path(enum cd_terr t1,
+bool cd_convoy_path(enum cd_terr t1,
                  enum cd_terr t2,
                  bool strict,
                  bool check_outcome);
 
-bool is_legal_move(size_t o, enum cd_terr exclude)
+bool cd_is_legal_move(size_t o, enum cd_terr exclude)
 {
     /* Must be a move */
     if (orders[o].kind != MOVE) {
@@ -175,18 +175,18 @@ bool is_legal_move(size_t o, enum cd_terr exclude)
     }
 
     if (territories[t1].unit == FLEET) {
-        return can_reach(t1, t2, FLEET, coast);
+        return cd_can_reach(t1, t2, FLEET, coast);
     }
 
     if (coast != NO_COAST) {
         return false;
     }
 
-    if (can_reach(t1, t2, ARMY, NO_COAST)) {
+    if (cd_can_reach(t1, t2, ARMY, NO_COAST)) {
         return true;
     }
 
-    if (!is_land(t2)) {
+    if (!cd_is_land(t2)) {
         return false;
     }
 
@@ -196,7 +196,7 @@ bool is_legal_move(size_t o, enum cd_terr exclude)
         territories[exclude].occupied = false;
     }
 
-    bool ret = convoy_path(t1, t2, false, false);
+    bool ret = cd_convoy_path(t1, t2, false, false);
 
     if (exclude != NO_TERR) {
         territories[exclude].occupied = occupied_old;
@@ -205,7 +205,7 @@ bool is_legal_move(size_t o, enum cd_terr exclude)
     return ret;
 }
 
-bool is_legal_convoy(size_t o)
+bool cd_is_legal_convoy(size_t o)
 {
     struct order *ord = &orders[o];
 
@@ -217,8 +217,8 @@ bool is_legal_convoy(size_t o)
         return false;
     }
 
-    if (!convoy_path(ord->terr, ord->orig, false, false) ||
-        !convoy_path(ord->terr, ord->targ, false, false)) {
+    if (!cd_convoy_path(ord->terr, ord->orig, false, false) ||
+        !cd_convoy_path(ord->terr, ord->targ, false, false)) {
 
         return false;
     }
@@ -228,7 +228,7 @@ bool is_legal_convoy(size_t o)
 
 /* Returns the resolution for order "o"
  */
-enum cd_resolution resolve(size_t o)
+enum cd_resolution cd_resolve(size_t o)
 {
     if (states[o] == RESOLVED) {
         return cd_resolutions[o];
@@ -248,7 +248,7 @@ enum cd_resolution resolve(size_t o)
     states[o] = GUESSING;
 
     /* Adjudicate order */
-    enum cd_resolution res1 = adjudicate(o);
+    enum cd_resolution res1 = cd_adjudicate(o);
 
     if (deps_n == deps_n_old) {
         /* Order does not depend on a guess */
@@ -281,7 +281,7 @@ enum cd_resolution resolve(size_t o)
     cd_resolutions[o] = SUCCEEDS;
     states[o] = GUESSING;
 
-    enum cd_resolution res2 = adjudicate(o);
+    enum cd_resolution res2 = cd_adjudicate(o);
 
     if (res1 == res2) {
         /* The cycle has a unique solution
@@ -300,15 +300,15 @@ enum cd_resolution resolve(size_t o)
     }
 
     /* The cycle requires special handling */
-    backup_rule(deps_n_old);
+    cd_backup_rule(deps_n_old);
 
     /* Restart from the top to make sure all orders
      * in the cycle have been resolved befor returning
      */
-    return resolve(o);
+    return cd_resolve(o);
 }
 
-bool dislodged(enum cd_terr t)
+bool cd_dislodged(enum cd_terr t)
 {
     /* Can't be dislodged if nobody's there */
     if (!territories[t].occupied) {
@@ -316,11 +316,11 @@ bool dislodged(enum cd_terr t)
     }
 
     /* Look for an order for t */
-    size_t o = get_order(t);
+    size_t o = cd_get_order(t);
 
     if (o < orders_n &&
         orders[o].kind == MOVE &&
-        resolve(o) == SUCCEEDS) {
+        cd_resolve(o) == SUCCEEDS) {
 
         /* If the unit leaves the territory,
          * it can't be dislodged
@@ -333,7 +333,7 @@ bool dislodged(enum cd_terr t)
     for (i = 0; i < orders_n; i++) {
         if (orders[i].kind == MOVE &&
             orders[i].targ == t &&
-            resolve(i) == SUCCEEDS) {
+            cd_resolve(i) == SUCCEEDS) {
 
             return true;
         }
@@ -342,7 +342,7 @@ bool dislodged(enum cd_terr t)
     return false;
 }
 
-bool convoy_path_r(enum cd_terr t1,
+bool cd_convoy_path_r(enum cd_terr t1,
                    enum cd_terr t2,
                    enum cd_terr cur,
                    bool *visited,
@@ -365,7 +365,7 @@ bool convoy_path_r(enum cd_terr t1,
         }
 
         /* Coastal territories can't convoy, skip */
-        if (is_coast(t)) {
+        if (cd_is_coast(t)) {
             continue;
         }
 
@@ -383,7 +383,7 @@ bool convoy_path_r(enum cd_terr t1,
 
         if (strict) {
             /* Look for an order for t */
-            size_t o = get_order(t);
+            size_t o = cd_get_order(t);
 
             /* If no order was found, or order is not
              * a convoy, or it is a convoy for a different
@@ -394,14 +394,14 @@ bool convoy_path_r(enum cd_terr t1,
                 orders[o].kind != CONVOY ||
                 orders[o].orig != t1 ||
                 orders[o].targ != t2 ||
-                (check_outcome && resolve(o) == FAILS)) {
+                (check_outcome && cd_resolve(o) == FAILS)) {
 
                 continue;
             }
         }
 
         /* A suitable convoy was found in t, explore recursively */
-        if (convoy_path_r(t1, t2, t, visited, strict, legality_check, check_outcome)) {
+        if (cd_convoy_path_r(t1, t2, t, visited, strict, legality_check, check_outcome)) {
             return true;
         }
     }
@@ -410,12 +410,12 @@ bool convoy_path_r(enum cd_terr t1,
     return false;
 }
 
-bool convoy_path(enum cd_terr t1,
+bool cd_convoy_path(enum cd_terr t1,
                  enum cd_terr t2,
                  bool strict,
                  bool check_outcome)
 {
-    bool coast_to_coast = is_coast(t1) && is_coast(t2);
+    bool coast_to_coast = cd_is_coast(t1) && cd_is_coast(t2);
 
     if (strict && !coast_to_coast) {
         return false;
@@ -423,14 +423,14 @@ bool convoy_path(enum cd_terr t1,
 
     bool *visited = calloc(TERR_N, sizeof *visited);
 
-    bool ret = convoy_path_r(t1, t2, t1, visited,
+    bool ret = cd_convoy_path_r(t1, t2, t1, visited,
                              strict, !coast_to_coast, check_outcome);
 
     free(visited);
     return ret;
 }
 
-bool convoy_intent(size_t o)
+bool cd_convoy_intent(size_t o)
 {
     if (orders[o].via_convoy) {
         return true;
@@ -444,7 +444,7 @@ bool convoy_intent(size_t o)
             territories[orders[i].terr].nation == nation &&
             orders[i].orig == orders[o].terr &&
             orders[i].targ == orders[o].targ &&
-            is_legal_convoy(i)) {
+            cd_is_legal_convoy(i)) {
 
             return true;
         }
@@ -453,32 +453,32 @@ bool convoy_intent(size_t o)
     return false;
 }
 
-bool path(enum cd_terr t1, enum cd_terr t2, enum cd_coast coast)
+bool cd_path(enum cd_terr t1, enum cd_terr t2, enum cd_coast coast)
 {
     if (!territories[t1].occupied) {
         return false;
     }
 
     if (territories[t1].unit == FLEET) {
-        return can_reach(t1, t2, FLEET, coast);
+        return cd_can_reach(t1, t2, FLEET, coast);
     }
 
     if (coast != NO_COAST) {
         return false;
     }
 
-    bool can_reach_ret = can_reach(t1, t2, ARMY, NO_COAST);
+    bool can_reach_ret = cd_can_reach(t1, t2, ARMY, NO_COAST);
 
-    if (!can_reach_ret || (convoy_path(t1, t2, true, false) &&
-                           convoy_intent(get_order(t1)))) {
+    if (!can_reach_ret || (cd_convoy_path(t1, t2, true, false) &&
+                           cd_convoy_intent(cd_get_order(t1)))) {
 
-        return convoy_path(t1, t2, true, true);
+        return cd_convoy_path(t1, t2, true, true);
     }
 
     return can_reach_ret;
 }
 
-unsigned hold_strength(enum cd_terr t)
+unsigned cd_hold_strength(enum cd_terr t)
 {
     if (!territories[t].occupied) {
         /* t is empty */
@@ -486,15 +486,15 @@ unsigned hold_strength(enum cd_terr t)
     }
 
     /* Look for an order for t */
-    size_t o = get_order(t);
+    size_t o = cd_get_order(t);
 
     /* If order exists and is valid a move */
-    if (o != orders_n && is_legal_move(o, NO_TERR)) {
+    if (o != orders_n && cd_is_legal_move(o, NO_TERR)) {
 
         /* Strength is 0 if it succeds, (occupier unit goes away)
          * 1 otherwise
          */
-        return resolve(o) == SUCCEEDS ? 0 : 1;
+        return cd_resolve(o) == SUCCEEDS ? 0 : 1;
     }
 
     /* Count succesful hold supports */
@@ -504,7 +504,7 @@ unsigned hold_strength(enum cd_terr t)
         if (orders[i].kind == SUPPORT &&
             orders[i].orig == t &&
             orders[i].targ == t &&
-            resolve(i) == SUCCEEDS) {
+            cd_resolve(i) == SUCCEEDS) {
 
             strength++;
         }
@@ -513,7 +513,7 @@ unsigned hold_strength(enum cd_terr t)
     return strength;
 }
 
-unsigned successful_supports(enum cd_terr t1,
+unsigned cd_successful_supports(enum cd_terr t1,
                              enum cd_terr t2,
                              unsigned excluded)
 {
@@ -526,7 +526,7 @@ unsigned successful_supports(enum cd_terr t1,
             orders[i].orig == t1 &&
             orders[i].targ == t2 &&
             sup_nation & ~excluded &&
-            resolve(i) == SUCCEEDS) {
+            cd_resolve(i) == SUCCEEDS) {
 
             ret++;
         }
@@ -535,7 +535,7 @@ unsigned successful_supports(enum cd_terr t1,
     return ret;
 }
 
-unsigned attack_strength_vs(enum cd_terr t1,
+unsigned cd_attack_strength_vs(enum cd_terr t1,
                             enum cd_terr t2,
                             enum cd_coast coast,
                             enum cd_nation opponent)
@@ -544,24 +544,24 @@ unsigned attack_strength_vs(enum cd_terr t1,
         coast = NO_COAST;
     }
 
-    if (!path(t1, t2, coast)) {
+    if (!cd_path(t1, t2, coast)) {
         return 0;
     }
 
-    size_t o = get_order(t2);
+    size_t o = cd_get_order(t2);
 
     bool successful_move = o < orders_n &&
                            orders[o].kind == MOVE &&
-                           resolve(o) == SUCCEEDS;
+                           cd_resolve(o) == SUCCEEDS;
 
     if (!territories[t2].occupied || successful_move) {
-        return 1 + successful_supports(t1, t2, opponent);
+        return 1 + cd_successful_supports(t1, t2, opponent);
     } else {
-        return 1 + successful_supports(t1, t2, opponent | territories[t2].nation);
+        return 1 + cd_successful_supports(t1, t2, opponent | territories[t2].nation);
     }
 }
 
-unsigned attack_strength(enum cd_terr t1,
+unsigned cd_attack_strength(enum cd_terr t1,
                          enum cd_terr t2,
                          enum cd_coast coast)
 {
@@ -569,42 +569,42 @@ unsigned attack_strength(enum cd_terr t1,
         coast = NO_COAST;
     }
 
-    if (!path(t1, t2, coast)) {
+    if (!cd_path(t1, t2, coast)) {
         return 0;
     }
 
-    size_t o = get_order(t2);
+    size_t o = cd_get_order(t2);
 
     bool successful_move = o < orders_n &&
                            orders[o].kind == MOVE &&
                            orders[o].targ != t1 &&
-                           resolve(o) == SUCCEEDS;
+                           cd_resolve(o) == SUCCEEDS;
 
     if (!territories[t2].occupied || successful_move) {
-        return 1 + successful_supports(t1, t2, NO_NATION);
+        return 1 + cd_successful_supports(t1, t2, NO_NATION);
     }
 
     if (territories[t2].nation == territories[t1].nation) {
         return 0;
     }
 
-    return 1 + successful_supports(t1, t2, territories[t2].nation);
+    return 1 + cd_successful_supports(t1, t2, territories[t2].nation);
 }
 
-unsigned defend_strength(enum cd_terr t1,
+unsigned cd_defend_strength(enum cd_terr t1,
                          enum cd_terr t2)
 {
-    return 1 + successful_supports(t1, t2, NO_NATION);
+    return 1 + cd_successful_supports(t1, t2, NO_NATION);
 }
 
-bool head_to_head(enum cd_terr t1, enum cd_terr t2, bool retreat)
+bool cd_head_to_head(enum cd_terr t1, enum cd_terr t2, bool retreat)
 {
-    size_t o2 = get_order(t2);
+    size_t o2 = cd_get_order(t2);
 
     if (o2 >= orders_n ||
         orders[o2].kind != MOVE ||
         orders[o2].targ != t1 ||
-        (convoy_intent(o2) && convoy_path(t2, t1, true, true))) {
+        (cd_convoy_intent(o2) && cd_convoy_path(t2, t1, true, true))) {
 
         return false;
     }
@@ -613,38 +613,38 @@ bool head_to_head(enum cd_terr t1, enum cd_terr t2, bool retreat)
         return true;
     }
 
-    size_t o1 = get_order(t1);
+    size_t o1 = cd_get_order(t1);
 
     return o1 < orders_n &&
            orders[o1].kind == MOVE &&
            orders[o1].targ == t2 &&
-           (!convoy_intent(o1) || !convoy_path(t1, t2, true, true));
+           (!cd_convoy_intent(o1) || !cd_convoy_path(t1, t2, true, true));
 }
 
-unsigned prevent_strength(enum cd_terr t1,
+unsigned cd_prevent_strength(enum cd_terr t1,
                           enum cd_terr t2,
                           enum cd_coast coast)
 {
-    if (!path(t1, t2, coast)) {
+    if (!cd_path(t1, t2, coast)) {
         return 0;
     }
 
-    if (head_to_head(t1, t2, false) &&
-        resolve(get_order(t2)) == SUCCEEDS) {
+    if (cd_head_to_head(t1, t2, false) &&
+        cd_resolve(cd_get_order(t2)) == SUCCEEDS) {
 
         return 0;
     }
 
-    return 1 + successful_supports(t1, t2, NO_NATION);
+    return 1 + cd_successful_supports(t1, t2, NO_NATION);
 }
 
-bool can_retreat(enum cd_terr t1, enum cd_terr t2)
+bool cd_can_retreat(enum cd_terr t1, enum cd_terr t2)
 {
-    if (hold_strength(t2) > 0) {
+    if (cd_hold_strength(t2) > 0) {
         return false;
     }
 
-    if (head_to_head(t1, t2, true)) {
+    if (cd_head_to_head(t1, t2, true)) {
         return false;
     }
 
@@ -654,7 +654,7 @@ bool can_retreat(enum cd_terr t1, enum cd_terr t2)
             orders[i].targ == t2 &&
             orders[i].terr != t1) {
 
-            if (prevent_strength(orders[i].terr, t2,
+            if (cd_prevent_strength(orders[i].terr, t2,
                                  orders[i].coast) > 0) {
 
                 return false;
@@ -667,7 +667,7 @@ bool can_retreat(enum cd_terr t1, enum cd_terr t2)
 
 /* Resolves a circular motion
  */
-void circular_motion(size_t deps_n_old)
+void cd_circular_motion(size_t deps_n_old)
 {
     /* Everybody succeeds */
     size_t i;
@@ -680,7 +680,7 @@ void circular_motion(size_t deps_n_old)
 
 /* Resolves a convoy paradox
  */
-void szykman(size_t deps_n_old)
+void cd_szykman(size_t deps_n_old)
 {
     /* Convoys fail */
     size_t i;
@@ -697,7 +697,7 @@ void szykman(size_t deps_n_old)
 
 /* Resolves an ambiguous circular dependency
  */
-void backup_rule(size_t deps_n_old)
+void cd_backup_rule(size_t deps_n_old)
 {
     bool convoy = false;
     bool support = false;
@@ -719,10 +719,10 @@ void backup_rule(size_t deps_n_old)
 
     if (convoy && support) {
         /* Convoy paradox: apply Szykman rule */
-        szykman(deps_n_old);
+        cd_szykman(deps_n_old);
     } else {
         /* Circular motion */
-        circular_motion(deps_n_old);
+        cd_circular_motion(deps_n_old);
     }
 
     deps_n = deps_n_old;
@@ -731,7 +731,7 @@ void backup_rule(size_t deps_n_old)
 
 /* Adjudicates order "o"
  */
-enum cd_resolution adjudicate(size_t o)
+enum cd_resolution cd_adjudicate(size_t o)
 {
     if (!territories[orders[o].terr].occupied) {
         return FAILS;
@@ -740,12 +740,12 @@ enum cd_resolution adjudicate(size_t o)
     switch (orders[o].kind) {
     case CONVOY:
         /* Check territory kind */
-        if (!is_inner_sea(orders[o].terr)) {
+        if (!cd_is_inner_sea(orders[o].terr)) {
             return FAILS;
         }
 
         /* Check that a matching move order exists */
-        size_t m = get_order(orders[o].orig);
+        size_t m = cd_get_order(orders[o].orig);
 
         if (m >= orders_n ||
             orders[m].kind != MOVE ||
@@ -755,7 +755,7 @@ enum cd_resolution adjudicate(size_t o)
         }
 
         /* Convoy succeeds if not dislodged */
-        if (dislodged(orders[o].terr)) {
+        if (cd_dislodged(orders[o].terr)) {
             return FAILS;
         }
 
@@ -763,7 +763,7 @@ enum cd_resolution adjudicate(size_t o)
 
     case SUPPORT:
         /* Check if valid */
-        if (!can_support(orders[o].terr,
+        if (!cd_can_support(orders[o].terr,
                          orders[o].targ,
                          territories[orders[o].terr].unit,
                          territories[orders[o].terr].coast)) {
@@ -776,11 +776,11 @@ enum cd_resolution adjudicate(size_t o)
             return FAILS;
         }
 
-        size_t i = get_order(orders[o].orig);
+        size_t i = cd_get_order(orders[o].orig);
 
         if (orders[o].orig == orders[o].targ) {
             /* This is a support to hold */
-            if (i < orders_n && is_legal_move(i, NO_TERR)) {
+            if (i < orders_n && cd_is_legal_move(i, NO_TERR)) {
                 /* Orig unit is ordered a legal move.
                  * An illegal move or no order at all
                  * is treated as a hold. A legal move
@@ -795,7 +795,7 @@ enum cd_resolution adjudicate(size_t o)
              * legal move and be concordant with us */
 
             if (i >= orders_n ||
-                !is_legal_move(i, orders[o].terr) ||
+                !cd_is_legal_move(i, orders[o].terr) ||
                 orders[i].targ != orders[o].targ) {
 
                 return FAILS;
@@ -827,7 +827,7 @@ enum cd_resolution adjudicate(size_t o)
             }
 
             /* And the moving unit has a successcful path */
-            if (!path(attacker, cur, orders[i].coast)) {
+            if (!cd_path(attacker, cur, orders[i].coast)) {
                 continue;
             }
 
@@ -835,7 +835,7 @@ enum cd_resolution adjudicate(size_t o)
         }
 
         /* Check if dislodged */
-        if (dislodged(cur)) {
+        if (cd_dislodged(cur)) {
             return FAILS;
         }
 
@@ -848,16 +848,16 @@ enum cd_resolution adjudicate(size_t o)
         enum cd_terr t2 = orders[o].targ;
         enum cd_coast coast = orders[o].coast;
 
-        unsigned atk = attack_strength(t1, t2, coast);
+        unsigned atk = cd_attack_strength(t1, t2, coast);
 
-        if (head_to_head(t1, t2, false)) {
+        if (cd_head_to_head(t1, t2, false)) {
             /* It's a head-to-head, use defend_strength */
-            if (atk <= defend_strength(t2, t1)) {
+            if (atk <= cd_defend_strength(t2, t1)) {
                 return FAILS;
             }
         } else {
             /* It's a regular battle, use hold_strength */
-            if (atk <= hold_strength(t2)) {
+            if (atk <= cd_hold_strength(t2)) {
                 return FAILS;
             }
         }
@@ -868,10 +868,10 @@ enum cd_resolution adjudicate(size_t o)
                 orders[i].targ == t2 &&
                 orders[i].terr != t1) {
 
-                atk = attack_strength_vs(t1, t2, coast,
+                atk = cd_attack_strength_vs(t1, t2, coast,
                                          territories[orders[i].terr].nation);
 
-                if (atk <= prevent_strength(orders[i].terr, t2,
+                if (atk <= cd_prevent_strength(orders[i].terr, t2,
                                             orders[i].coast)) {
                     return FAILS;
                 }
