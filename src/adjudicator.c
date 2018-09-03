@@ -44,11 +44,11 @@ size_t cd_get_order(enum cd_terr t)
 }
 
 void cd_register_order(enum kind kind,
-                    enum cd_terr terr,
-                    enum cd_terr orig,
-                    enum cd_terr targ,
-                    enum cd_coast coast,
-                    bool via_convoy)
+                       enum cd_terr terr,
+                       enum cd_terr orig,
+                       enum cd_terr targ,
+                       enum cd_coast coast,
+                       bool via_convoy)
 {
     size_t o = cd_get_order(terr);
 
@@ -155,9 +155,9 @@ void cd_run_adjudicator()
 }
 
 bool cd_convoy_path(enum cd_terr t1,
-                 enum cd_terr t2,
-                 bool strict,
-                 bool check_outcome);
+                    enum cd_terr t2,
+                    bool strict,
+                    bool check_outcome);
 
 bool cd_is_legal_move(size_t o, enum cd_terr exclude)
 {
@@ -343,12 +343,12 @@ bool cd_dislodged(enum cd_terr t)
 }
 
 bool cd_convoy_path_r(enum cd_terr t1,
-                   enum cd_terr t2,
-                   enum cd_terr cur,
-                   bool *visited,
-                   bool strict,
-                   bool legality_check,
-                   bool check_outcome)
+                      enum cd_terr t2,
+                      enum cd_terr cur,
+                      bool *visited,
+                      bool strict,
+                      bool legality_check,
+                      bool check_outcome)
 {
     /* For each neighbouring sea territory */
     size_t i;
@@ -411,9 +411,9 @@ bool cd_convoy_path_r(enum cd_terr t1,
 }
 
 bool cd_convoy_path(enum cd_terr t1,
-                 enum cd_terr t2,
-                 bool strict,
-                 bool check_outcome)
+                    enum cd_terr t2,
+                    bool strict,
+                    bool check_outcome)
 {
     bool coast_to_coast = cd_is_coast(t1) && cd_is_coast(t2);
 
@@ -424,7 +424,7 @@ bool cd_convoy_path(enum cd_terr t1,
     bool *visited = calloc(TERR_N, sizeof *visited);
 
     bool ret = cd_convoy_path_r(t1, t2, t1, visited,
-                             strict, !coast_to_coast, check_outcome);
+                                strict, !coast_to_coast, check_outcome);
 
     free(visited);
     return ret;
@@ -514,8 +514,8 @@ unsigned cd_hold_strength(enum cd_terr t)
 }
 
 unsigned cd_successful_supports(enum cd_terr t1,
-                             enum cd_terr t2,
-                             unsigned excluded)
+                                enum cd_terr t2,
+                                unsigned excluded)
 {
     unsigned ret = 0;
 
@@ -536,9 +536,9 @@ unsigned cd_successful_supports(enum cd_terr t1,
 }
 
 unsigned cd_attack_strength_vs(enum cd_terr t1,
-                            enum cd_terr t2,
-                            enum cd_coast coast,
-                            enum cd_nation opponent)
+                               enum cd_terr t2,
+                               enum cd_coast coast,
+                               enum cd_nation opponent)
 {
     if (territories[t1].unit == ARMY) {
         coast = NO_COAST;
@@ -562,8 +562,8 @@ unsigned cd_attack_strength_vs(enum cd_terr t1,
 }
 
 unsigned cd_attack_strength(enum cd_terr t1,
-                         enum cd_terr t2,
-                         enum cd_coast coast)
+                            enum cd_terr t2,
+                            enum cd_coast coast)
 {
     if (territories[t1].unit == ARMY) {
         coast = NO_COAST;
@@ -592,7 +592,7 @@ unsigned cd_attack_strength(enum cd_terr t1,
 }
 
 unsigned cd_defend_strength(enum cd_terr t1,
-                         enum cd_terr t2)
+                            enum cd_terr t2)
 {
     return 1 + cd_successful_supports(t1, t2, NO_NATION);
 }
@@ -622,8 +622,8 @@ bool cd_head_to_head(enum cd_terr t1, enum cd_terr t2, bool retreat)
 }
 
 unsigned cd_prevent_strength(enum cd_terr t1,
-                          enum cd_terr t2,
-                          enum cd_coast coast)
+                             enum cd_terr t2,
+                             enum cd_coast coast)
 {
     if (!cd_path(t1, t2, coast)) {
         return 0;
@@ -655,7 +655,7 @@ bool cd_can_retreat(enum cd_terr t1, enum cd_terr t2)
             orders[i].terr != t1) {
 
             if (cd_prevent_strength(orders[i].terr, t2,
-                                 orders[i].coast) > 0) {
+                orders[i].coast) > 0) {
 
                 return false;
             }
@@ -764,9 +764,9 @@ enum cd_resolution cd_adjudicate(size_t o)
     case SUPPORT:
         /* Check if valid */
         if (!cd_can_support(orders[o].terr,
-                         orders[o].targ,
-                         territories[orders[o].terr].unit,
-                         territories[orders[o].terr].coast)) {
+            orders[o].targ,
+            territories[orders[o].terr].unit,
+            territories[orders[o].terr].coast)) {
 
             return FAILS;
         }

@@ -58,11 +58,11 @@ extern struct order orders[MAX_ORDERS];
 extern size_t orders_n;
 
 void cd_register_order(enum kind kind,
-                    enum cd_terr terr,
-                    enum cd_terr orig,
-                    enum cd_terr targ,
-                    enum cd_coast coast,
-                    bool via_convoy);
+                       enum cd_terr terr,
+                       enum cd_terr orig,
+                       enum cd_terr targ,
+                       enum cd_coast coast,
+                       bool via_convoy);
 
 enum state {
     UNRESOLVED,

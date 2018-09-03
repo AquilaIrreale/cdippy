@@ -25,9 +25,9 @@
 #include "map.h"
 #include "parser.h"
 
-enum cd_unit cd_get_unit(const char *s);
-enum cd_coast cd_get_coast(const char *s);
-enum cd_terr cd_get_territory(const char *s);
+enum cd_unit   cd_get_unit(const char *s);
+enum cd_coast  cd_get_coast(const char *s);
+enum cd_terr   cd_get_territory(const char *s);
 enum cd_nation cd_get_nation(const char *s);
 %}
 

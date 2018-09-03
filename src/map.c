@@ -235,7 +235,7 @@ bool cd_is_inner_sea(enum cd_terr t)
 }
 
 bool cd_is_land_adjacent(enum cd_terr t1,
-                      enum cd_terr t2)
+                         enum cd_terr t2)
 {
     struct terr_info *terr = &territories[t1];
 
@@ -250,7 +250,7 @@ bool cd_is_land_adjacent(enum cd_terr t1,
 }
 
 bool cd_is_sea_adjacent(enum cd_terr t1,
-                     enum cd_terr t2)
+                        enum cd_terr t2)
 {
     struct terr_info *terr = &territories[t1];
 
@@ -265,8 +265,8 @@ bool cd_is_sea_adjacent(enum cd_terr t1,
 }
 
 bool cd_is_coast_adjacent(enum cd_terr t1,
-                       enum cd_terr t2,
-                       enum cd_coast coast)
+                          enum cd_terr t2,
+                          enum cd_coast coast)
 {
     assert(cd_is_single_coast(t1) &&
            !cd_is_single_coast(t2) &&
@@ -303,9 +303,9 @@ bool cd_is_coast_adjacent(enum cd_terr t1,
 }
 
 bool cd_can_reach(enum cd_terr t1,
-               enum cd_terr t2,
-               enum cd_unit unit,
-               enum cd_coast coast)
+                  enum cd_terr t2,
+                  enum cd_unit unit,
+                  enum cd_coast coast)
 {
     if (unit == ARMY) {
         return cd_is_land_adjacent(t1, t2);
@@ -330,7 +330,7 @@ bool cd_can_reach(enum cd_terr t1,
 
         return cd_is_coast_adjacent(t2, t1, coast);
     }
-                           /*      Unnecessary       */
+                              /*        Unnecessary        */
     if (cd_is_single_coast(t2)/* || !cd_is_single_coast(t1)*/) {
         return false;
     }
@@ -339,9 +339,9 @@ bool cd_can_reach(enum cd_terr t1,
 }
 
 bool cd_can_support(enum cd_terr t1,
-                 enum cd_terr t2,
-                 enum cd_unit unit,
-                 enum cd_coast coast)
+                    enum cd_terr t2,
+                    enum cd_unit unit,
+                    enum cd_coast coast)
 {
     if (unit == ARMY) {
         return cd_can_reach(t1, t2, unit, coast);
