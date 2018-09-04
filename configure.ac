@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([cdippy], [1.2], [aquilairreale@ymail.com])
+AC_INIT([cdippy], [1.3], [aquilairreale@ymail.com])
 AM_INIT_AUTOMAKE([foreign subdir-objects dejagnu])
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])
