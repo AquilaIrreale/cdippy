@@ -61,7 +61,7 @@ void cd_execute()
 int main(int argc, char *argv[])
 {
     if (argc > 1) {
-        fprintf(stderr, "%s: no command-line argument supported\n", argv[0]);
+        fprintf(stderr, "%s: ignoring all command line arguments\n", argv[0]);
         return 1;
     }
 
