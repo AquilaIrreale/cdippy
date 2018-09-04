@@ -126,8 +126,8 @@ void cd_compute_retreats()
         cd_retreats[cd_retreats_n].who = t1;
 
         const enum cd_terr *neighs = territories[t1].unit == ARMY
-                                     ? territories[t1].land_neighs
-                                     : territories[t1].sea_neighs;
+                                   ? territories[t1].land_neighs
+                                   : territories[t1].sea_neighs;
 
         size_t neighs_n = territories[t1].unit == ARMY
                         ? territories[t1].land_neighs_n
