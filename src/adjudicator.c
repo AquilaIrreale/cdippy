@@ -172,6 +172,7 @@ void cd_run_adjudicator()
 {
     cd_adjudicate_all();
     cd_compute_retreats();
+    orders_n = 0;
 }
 
 void cd_run_adjudicator_internal()
