@@ -47,7 +47,18 @@ void cd_execute()
 
         size_t j;
         for (j = 0; j < cd_retreats[i].where_n; j++) {
-            printf(" %s", cd_terr_name(cd_retreats[i].where[j]));
+            unsigned coasts = cd_retreats[i].where[j].coasts;
+            if (coasts == NO_COAST) {
+                printf(" %s", cd_terr_name(cd_retreats[i].where[j].terr));
+            } else {
+                if (coasts & NORTH) {
+                    printf(" %s(NC)", cd_terr_name(cd_retreats[i].where[j].terr));
+                }
+
+                if (coasts & SOUTH) {
+                    printf(" %s(SC)", cd_terr_name(cd_retreats[i].where[j].terr));
+                }
+            }
         }
 
         putchar('\n');

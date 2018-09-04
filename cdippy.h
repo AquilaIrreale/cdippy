@@ -12,9 +12,9 @@ enum cd_unit {
 };
 
 enum cd_coast {
-    NO_COAST,
-    NORTH,
-    SOUTH
+    NO_COAST = 0,
+    NORTH    = 1,
+    SOUTH    = 2
 };
 
 enum cd_nation {
@@ -58,7 +58,12 @@ extern enum cd_resolution cd_resolutions[34];
 
 struct cd_retreat {
     enum cd_terr who;
-    enum cd_terr where[16];
+
+    struct {
+        enum cd_terr terr;
+        unsigned coasts;
+    } where[16];
+
     size_t where_n;
 };
 

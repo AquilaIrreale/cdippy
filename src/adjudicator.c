@@ -133,12 +133,32 @@ void cd_compute_retreats()
                         ? territories[t1].land_neighs_n
                         : territories[t1].sea_neighs_n;
 
+        enum cd_unit unit = territories[t1].unit;
+
         size_t i, j = 0;
         for (i = 0; i < neighs_n; i++) {
             enum cd_terr t2 = neighs[i];
 
-            if (cd_can_retreat(t1, t2)) {
-                cd_retreats[cd_retreats_n].where[j++] = t2;
+            if (!cd_can_retreat(t1, t2)) {
+                continue;
+            }
+
+            cd_retreats[cd_retreats_n].where[j].coasts = NO_COAST;
+
+            if (cd_can_reach(t1, t2, unit, NO_COAST)) {
+                cd_retreats[cd_retreats_n].where[j++].terr = t2;
+                continue;
+            }
+
+            enum cd_coast coast;
+            for (coast = NORTH; coast <= SOUTH; coast <<= 1) {
+                if (cd_can_reach(t1, t2, unit, coast)) {
+                    cd_retreats[cd_retreats_n].where[j].coasts |= coast;
+                }
+            }
+
+            if (cd_retreats[cd_retreats_n].where[j].coasts != NO_COAST) {
+                cd_retreats[cd_retreats_n].where[j++].terr = t2;
             }
         }
 
