@@ -26,49 +26,6 @@
 #include "map.h"
 #include "adjudicator.h"
 
-void cd_execute()
-{
-    cd_adjudicate_all();
-    cd_compute_retreats();
-
-    size_t i;
-    for (i = 0; i < orders_n; i++) {
-        if (cd_resolutions[i] == SUCCEEDS) {
-            printf("%zu: SUCCEEDS\n", i);
-        } else {
-            printf("%zu: FAILS\n", i);
-        }
-    }
-
-    putchar('\n');
-
-    for (i = 0; i < cd_retreats_n; i++) {
-        printf("%s:", cd_terr_name(cd_retreats[i].who));
-
-        size_t j;
-        for (j = 0; j < cd_retreats[i].where_n; j++) {
-            unsigned coasts = cd_retreats[i].where[j].coasts;
-            if (coasts == NO_COAST) {
-                printf(" %s", cd_terr_name(cd_retreats[i].where[j].terr));
-            } else {
-                if (coasts & NORTH) {
-                    printf(" %s(NC)", cd_terr_name(cd_retreats[i].where[j].terr));
-                }
-
-                if (coasts & SOUTH) {
-                    printf(" %s(SC)", cd_terr_name(cd_retreats[i].where[j].terr));
-                }
-            }
-        }
-
-        putchar('\n');
-    }
-
-    putchar('\n');
-
-    orders_n = 0;
-}
-
 int main(int argc, char *argv[])
 {
     if (argc > 1) {

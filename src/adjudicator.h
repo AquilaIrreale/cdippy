@@ -54,9 +54,6 @@ struct order {
                           */
 };
 
-extern struct order orders[MAX_ORDERS];
-extern size_t orders_n;
-
 void cd_register_order(enum kind kind,
                        enum cd_terr terr,
                        enum cd_terr orig,
@@ -70,9 +67,7 @@ enum state {
     RESOLVED
 };
 
-void cd_adjudicate_all();
-void cd_compute_retreats();
-void cd_adjudicator_reset();
+void cd_run_adjudicator_internal();
 
 bool cd_dislodged(enum cd_terr t);
 bool cd_can_retreat(enum cd_terr t1, enum cd_terr t2);

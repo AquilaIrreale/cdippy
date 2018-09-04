@@ -26,7 +26,6 @@
 #include "map.h"
 #include "adjudicator.h"
 
-void cd_execute();
 void yyerror(const char *s);
 int yywrap();
 int yylex();
@@ -54,7 +53,7 @@ int yylex();
 %%
 
 list: /* Nothing */
-    | list state_list '\n' orders_list '\n' {cd_execute();}
+    | list state_list '\n' orders_list '\n' {cd_run_adjudicator_internal();}
 
 state_list: /* Nothing */
           | state_list state_directive '\n'
